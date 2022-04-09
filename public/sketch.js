@@ -1,4 +1,3 @@
-const { text } = require("express");
 
 const socket = io.connect('http://localhost:3000');
 let gameActive = false;
