@@ -7,7 +7,7 @@ const Player = require("./Player");
 
 const ROOM_MAX_CAPACITY = 2;
 
-const server = app.listen(80);
+const server = app.listen(3000);
 console.log('The server is now running at http://localhost/');
 app.use(express.static("public"));
 const io = socket(server);

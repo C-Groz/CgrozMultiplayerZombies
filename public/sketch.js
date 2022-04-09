@@ -1,4 +1,4 @@
-const socket = io.connect('http://localhost');
+const socket = io.connect('http://localhost:3000');
 
 let players = [];
 socket.on("heartbeat", players => updatePlayers(players));
