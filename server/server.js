@@ -14,7 +14,7 @@ const io = socket(server);
 
 const rooms = [short.generate()];
 let players = [];
-//setInterval(updateGame, 16);
+setInterval(updateGame, 16);
 
 io.sockets.on("connection", socket => {
   console.log(`New connection ${socket.id}`);

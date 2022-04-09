@@ -1,18 +1,30 @@
+const { text } = require("express");
+
 const socket = io.connect('http://localhost:3000');
+let gameActive = false;
 
 let players = [];
-socket.on("heartbeat", players => updatePlayers(players));
-
+//socket.on("heartbeat", players => updatePlayers(players));
+socket.on("heartbeat", players => updateMenus(players));
 function setup() {
   createCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
   background(220);
-  players.forEach(player => {
-    player.draw();
-    player.move();
-  });
+  if(!gameActive){
+    text("Chank's Zombies", windowWidth/2, 200);
+  }else{
+    players.forEach(player => {
+      player.draw();
+      player.move();
+    });
+  }
+  
+}
+
+function updateMenus(serverPlayers){
+
 }
 
 function updatePlayers(serverPlayers) {
