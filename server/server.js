@@ -5,7 +5,7 @@ const short = require('short-uuid');
 
 const Player = require("./Player");
 
-const ROOM_MAX_CAPACITY = 2;
+const ROOM_MAX_CAPACITY = 4;
 
 const server = app.listen(3000);
 console.log('The server is now running at http://localhost/');
