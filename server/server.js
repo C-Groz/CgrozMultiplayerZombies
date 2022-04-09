@@ -25,7 +25,7 @@ io.sockets.on("connection", socket => {
   socket.join(roomId);
 
   socket.on("disconnect", () => {
-    io.sockets.emit("disconnect", socket.id);
+    //io.sockets.emit("disconnect", socket.id);
     players = players.filter(player => player.id !== socket.id);
   });
 });
