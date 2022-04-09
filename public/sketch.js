@@ -4,7 +4,7 @@ let players = [];
 socket.on("heartbeat", players => updatePlayers(players));
 
 function setup() {
-  createCanvas(windowWidth, WindowHeight);
+  createCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
