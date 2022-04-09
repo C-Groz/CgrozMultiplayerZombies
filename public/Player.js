@@ -13,4 +13,9 @@ class Player {
     circle(this.x, this.y, 50);
   }
 
+  move() {
+    this.x += random(1, 10);
+    this.y += random(1, 10);
+  }
+
 }
