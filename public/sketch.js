@@ -25,7 +25,7 @@ function draw() {
     fill(105,105,105);
     text("Players in lobby: " + players.length, windowWidth/2, windowHeight/2 - 250);
 
-    rect(windowWidth/2 - 50, windowHeight/2 - 200, 100, 50);
+    rect(windowWidth/2 - 150, windowHeight/2 - 200, 300, 50);
 
 
   }else{
