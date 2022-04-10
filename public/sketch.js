@@ -29,9 +29,9 @@ function draw() {
       rect(windowWidth/2 - 150, windowHeight/2 - 200 + 50*i, 300, 50);
     }
 
-    let nameInput = createInput();
+    let nameInput = createInput('Enter Name');
     nameInput.position(windowWidth/2, windowHeight/2);
-
+    nameInput.size(200);
 
 
 
