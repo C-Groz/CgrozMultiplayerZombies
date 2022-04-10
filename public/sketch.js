@@ -12,8 +12,14 @@ function setup() {
 function draw() {
   background(220);
   if(!gameActive){
-    text("Chank's Zombies", windowWidth/2, 200);
+    textFont(inconsolata);
+    textSize(150);
+    fill(160, 10, 20);
+    textAlign(CENTER, CENTER);
+    text("Chank's Zombies", windowWidth/2, windowHeight/2 + 400);
+
   }else{
+
     players.forEach(player => {
       player.draw();
       player.move();
