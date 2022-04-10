@@ -19,7 +19,7 @@ function draw() {
     text("Chank's Zombies", windowWidth/2, windowHeight/2 - 300);
 
     textSize(30);
-    fill(200, 180, 230);
+    fill(105,105,105);
     text("Players in lobby: " + players.length, windowWidth/2, windowHeight/2 - 250);
 
 
