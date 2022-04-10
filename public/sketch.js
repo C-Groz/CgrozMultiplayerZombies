@@ -13,10 +13,10 @@ function draw() {
   background(220);
   if(!gameActive){
     //textFont(inconsolata);
-    textSize(150);
+    textSize(50);
     fill(160, 10, 20);
     textAlign(CENTER, CENTER);
-    text("Chank's Zombies", 0, windowHeight/2 + 200);
+    text("Chank's Zombies", windowWidth/2, windowHeight/2 + 200);
 
   }else{
 
