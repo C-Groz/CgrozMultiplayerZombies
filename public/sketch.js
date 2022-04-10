@@ -30,7 +30,7 @@ function draw() {
     }
 
     let nameInput = createInput('Enter Name');
-    nameInput.position(windowWidth/2, windowHeight/2);
+    nameInput.position(windowWidth/2 - 100, windowHeight/2);
     nameInput.size(200);
 
 
