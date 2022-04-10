@@ -2,8 +2,8 @@
 const socket = io.connect('http://localhost:3000');
 let gameActive = false;
 let playerName = "n/a";
-let submitButton = createButton('submit');
-let nameInput = createInput('Enter Name');
+let submitButton; 
+let nameInput; 
 
 
 let players = [];
@@ -14,6 +14,9 @@ socket.on("heartbeat", players => {
 });
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  let submitButton = createButton('submit');
+  let nameInput = createInput('Enter Name');
+
 }
 
 function draw() {
