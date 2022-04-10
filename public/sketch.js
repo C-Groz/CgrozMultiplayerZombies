@@ -29,7 +29,7 @@ function draw() {
       rect(windowWidth/2 - 150, windowHeight/2 - 200 + 50*i, 300, 50);
     }
 
-    nameInput = createInput();
+    let nameInput = createInput();
     nameInput.position(windowWidth/2, windowHeight/2);
 
 
