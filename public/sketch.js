@@ -38,12 +38,15 @@ function draw() {
     fill(255,255,255);
     text(playerName, windowWidth/2, windowHeight/2 - 175);
 
-    nameInput.position(windowWidth/2 - 150, windowHeight/2);
-    nameInput.size(200);
-    nameInput.changed(enterName);
-
-    submitButton.position(windowWidth/2 + 50, windowHeight/2);
-    submitButton.mousePressed(enterName);
+    if(nameInput != null && submitButton != null){
+      nameInput.position(windowWidth/2 - 150, windowHeight/2);
+      nameInput.size(200);
+      nameInput.changed(enterName);
+  
+      submitButton.position(windowWidth/2 + 50, windowHeight/2);
+      submitButton.mousePressed(enterName);
+    }
+  
 
 
   }else{
