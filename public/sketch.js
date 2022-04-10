@@ -11,6 +11,10 @@ socket.on("heartbeat", players => {
 });
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  let submitButton = createButton('submit');
+  let nameInput = createInput('Enter Name');
+
+
 }
 
 function draw() {
@@ -32,12 +36,10 @@ function draw() {
     fill(255,255,255);
     text(playerName, windowWidth/2, windowHeight/2 - 175);
 
-    let nameInput = createInput('Enter Name');
     nameInput.position(windowWidth/2 - 150, windowHeight/2);
     nameInput.size(200);
     nameInput.changed(enterName);
 
-    let submitButton = createButton('submit');
     submitButton.position(windowWidth/2 + 50, windowHeight/2);
     submitButton.mousePressed(enterName);
 
