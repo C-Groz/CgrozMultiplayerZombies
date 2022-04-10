@@ -29,8 +29,8 @@ function draw() {
     for(var i = 0; i < 4; i++){
       rect(windowWidth/2 - 150, windowHeight/2 - 200 + 50*i, 300, 50);
     }
-
-    text(playerName, windowWidth/2, windowHeight/2 - 150);
+    fill(255,255,255);
+    text(playerName, windowWidth/2, windowHeight/2 - 175);
 
     let nameInput = createInput('Enter Name');
     nameInput.position(windowWidth/2 - 150, windowHeight/2);
