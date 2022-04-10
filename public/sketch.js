@@ -12,7 +12,7 @@ function setup() {
 function draw() {
   background(220);
   if(!gameActive){
-    textFont(inconsolata);
+    //textFont(inconsolata);
     textSize(150);
     fill(160, 10, 20);
     textAlign(CENTER, CENTER);
