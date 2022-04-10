@@ -13,10 +13,16 @@ function draw() {
   background(220);
   if(!gameActive){
     //textFont(inconsolata);
+    textAlign(CENTER, CENTER);
     textSize(50);
     fill(160, 10, 20);
-    textAlign(CENTER, CENTER);
     text("Chank's Zombies", windowWidth/2, windowHeight/2 - 300);
+
+    textSize(30);
+    fill(200, 180, 230);
+    text("Players in lobby: " + players.length, windowWidth/2, windowHeight/2 - 250);
+
+
 
   }else{
 
