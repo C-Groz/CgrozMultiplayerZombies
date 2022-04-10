@@ -25,10 +25,14 @@ function draw() {
     fill(105,105,105);
     text("Players in lobby: " + players.length, windowWidth/2, windowHeight/2 - 225);
 
-   
     for(var i = 0; i < 4; i++){
       rect(windowWidth/2 - 150, windowHeight/2 - 200 + 50*i, 300, 50);
     }
+
+    nameInput = createInput();
+    nameInput.position(windowWidth/2, windowHeight/2);
+
+
 
 
   }else{
