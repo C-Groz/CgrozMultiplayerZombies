@@ -16,7 +16,7 @@ function draw() {
     textSize(150);
     fill(160, 10, 20);
     textAlign(CENTER, CENTER);
-    text("Chank's Zombies", 0, windowHeight/2 + 400);
+    text("Chank's Zombies", 0, windowHeight/2 + 200);
 
   }else{
 
