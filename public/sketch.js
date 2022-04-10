@@ -23,7 +23,7 @@ function draw() {
 
     textSize(30);
     fill(105,105,105);
-    text("Players in lobby: " + players.length, windowWidth/2, windowHeight/2 - 250);
+    text("Players in lobby: " + players.length, windowWidth/2, windowHeight/2 - 225);
 
     rect(windowWidth/2 - 150, windowHeight/2 - 200, 300, 50);
 
