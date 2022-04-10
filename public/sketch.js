@@ -4,7 +4,10 @@ let gameActive = false;
 
 let players = [];
 //socket.on("heartbeat", players => updatePlayers(players));
-socket.on("heartbeat", players => updateMenus(players));
+socket.on("heartbeat", players => {
+  updateMenus(players);
+  updatePlayers(players);
+});
 function setup() {
   createCanvas(windowWidth, windowHeight);
 }
