@@ -48,7 +48,7 @@ function updatePlayers(serverPlayers) {
   }
   for (let i = 0; i < serverPlayers.length; i++) {
     let playerFromServer = serverPlayers[i];
-    if (!playerExists(playerFromServer)) {
+    if (!playerExists(playerFromServer.id)) {
       players.push(new Player(playerFromServer));
     }
   }
@@ -56,7 +56,7 @@ function updatePlayers(serverPlayers) {
 
 function playerExists(playerFromServer) {
   for (let i = 0; i < players.length; i++) {
-    if (players[i].id === playerFromServer) {
+    if (players[i].id == playerFromServer) {
       return true;
     }
   }
