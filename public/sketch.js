@@ -35,6 +35,7 @@ function draw() {
     let nameInput = createInput('Enter Name');
     nameInput.position(windowWidth/2 - 150, windowHeight/2);
     nameInput.size(200);
+    nameInput.changed(enterName);
 
     let submitButton = createButton('submit');
     submitButton.position(windowWidth/2 + 50, windowHeight/2);
