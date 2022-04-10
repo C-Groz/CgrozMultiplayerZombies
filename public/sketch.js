@@ -1,7 +1,7 @@
 
 const socket = io.connect('http://localhost:3000');
 let gameActive = false;
-let playerName;
+let playerName = "n/a";
 
 let players = [];
 //socket.on("heartbeat", players => updatePlayers(players));
