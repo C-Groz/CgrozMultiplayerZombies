@@ -1,6 +1,7 @@
 
 const socket = io.connect('http://localhost:3000');
 let gameActive = false;
+let playerName;
 
 let players = [];
 //socket.on("heartbeat", players => updatePlayers(players));
@@ -29,10 +30,16 @@ function draw() {
       rect(windowWidth/2 - 150, windowHeight/2 - 200 + 50*i, 300, 50);
     }
 
+    text(playerName, windowWidth/2, windowHeight/2 - 150);
+
     let nameInput = createInput('Enter Name');
     nameInput.position(windowWidth/2 - 150, windowHeight/2);
     nameInput.size(200);
+    nameInput.input()
 
+    let submitButton = createButton('submit');
+    submitButton.position(nameInput.x + nameInput.width, 65);
+    submitButton.mousePressed(enterName);
 
 
   }else{
@@ -47,6 +54,10 @@ function draw() {
 
 function updateMenus(serverPlayers){
 
+}
+
+function enterName(){
+  playerName = input.value();
 }
 
 function updatePlayers(serverPlayers) {
