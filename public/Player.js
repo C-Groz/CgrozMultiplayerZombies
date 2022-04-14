@@ -4,6 +4,7 @@ class Player {
     this.y = player.y;
     this.id = player.id;
     this.rgb = player.rgb;
+    this.name = "New Player";
   }
 
 

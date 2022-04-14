@@ -1,9 +1,6 @@
 
 const socket = io.connect('http://localhost:3000');
 let gameActive = false;
-let playerName = "n/a";
-let submitButton; 
-let nameInput; 
 
 
 let players = [];
@@ -14,9 +11,6 @@ socket.on("heartbeat", players => {
 });
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  let submitButton = createButton('submit');
-  let nameInput = createInput('Enter Name');
-
 }
 
 function draw() {
@@ -33,18 +27,16 @@ function draw() {
     text("Players in lobby: " + players.length, windowWidth/2, windowHeight/2 - 225);
 
     for(var i = 0; i < 4; i++){
+      fill(105,105,105);
       rect(windowWidth/2 - 150, windowHeight/2 - 200 + 50*i, 300, 50);
-    }
-    fill(255,255,255);
-    text(playerName, windowWidth/2, windowHeight/2 - 175);
-
-    if(nameInput != null && submitButton != null){
-      nameInput.position(windowWidth/2 - 150, windowHeight/2);
-      nameInput.size(200);
-      nameInput.changed(enterName);
-  
-      submitButton.position(windowWidth/2 + 50, windowHeight/2);
-      submitButton.mousePressed(enterName);
+      
+      fill(0,0,0);
+      if(players[i] != null){
+        text(players[i].name, windowWidth/2, windowHeight/2 - 175 + 50*i)
+      }else{
+        text("empty", windowWidth/2, windowHeight/2 - 175 + 50*i)
+      }
+      
     }
   
 
