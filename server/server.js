@@ -14,21 +14,36 @@ const io = socket(server);
 
 const rooms = [short.generate()];
 let players = [];
+let userCounter = 0;
 setInterval(updateGame, 16);
 
 io.sockets.on("connection", socket => {
   console.log(`New connection ${socket.id}`);
+  userCounter++;
 
   const roomId = getRoom();
-  players.push(new Player(socket.id, roomId));
+  players.push(new Player(socket.id, roomId, userCounter));
 
   socket.join(roomId);
+
+  socket.emit('setPlayerNum', userCounter);
+
+  socket.on('nameChange', 
+  function(nameData){
+    players.forEach(player => {
+      if(player.number == nameData.number){
+        player.name = nameData.name;
+      }
+    })
+  });
 
   socket.on("disconnect", () => {
     //io.sockets.emit("disconnect", socket.id);
     players = players.filter(player => player.id !== socket.id);
   });
 });
+
+
 
 function updateGame() {
   for (const room of rooms) {

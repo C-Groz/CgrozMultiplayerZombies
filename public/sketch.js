@@ -1,16 +1,33 @@
 
 const socket = io.connect('http://localhost:3000');
 let gameActive = false;
+let nameInput;
+let submitNameButtom;
 
 
 let players = [];
 //socket.on("heartbeat", players => updatePlayers(players));
-socket.on("heartbeat", players => {
+socket.on("heartbeat", function(players) {
   updateMenus(players);
   updatePlayers(players);
 });
+socket.once('setPlayerNum', function(playerNum){
+  clientPlayer.number = playerNum;
+});
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
+  clientPlayer = new ClientPlayer();
+
+
+  nameInput = createInput('Enter Name');
+  submitNameButtom = createButton('Submit')
+
+  nameInput.position(windowWidth/2 - 100, windowHeight/2, 0);
+  submitNameButtom.position(windowWidth/2 + 50, windowHeight/2, 0);
+  submitNameButtom.mousePressed(changeName);
+
 }
 
 function draw() {
@@ -29,14 +46,14 @@ function draw() {
     for(var i = 0; i < 4; i++){
       fill(105,105,105);
       rect(windowWidth/2 - 150, windowHeight/2 - 200 + 50*i, 300, 50);
-      
+    }
+    for(var i = 0; i < 4; i++){
       fill(0,0,0);
       if(players[i] != null){
         text(players[i].name, windowWidth/2, windowHeight/2 - 175 + 50*i)
       }else{
         text("empty", windowWidth/2, windowHeight/2 - 175 + 50*i)
       }
-      
     }
   
 
@@ -52,11 +69,17 @@ function draw() {
 }
 
 function updateMenus(serverPlayers){
-
+  players = serverPlayers;
 }
 
-function enterName(){
-  playerName = input.value();
+function changeName(){
+  let nameData = {
+    name: nameInput.value(),
+    number: clientPlayer.number
+  }
+
+  socket.emit("nameChange", nameData);
+
 }
 
 function updatePlayers(serverPlayers) {
