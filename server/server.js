@@ -13,7 +13,7 @@ app.use(express.static("public"));
 const io = socket(server);
 
 const rooms = [short.generate()];
-let players = [];
+let players = [new Player(0,0,0)];
 let userCounter = 0;
 setInterval(updateGame, 16);
 
@@ -26,7 +26,11 @@ io.sockets.on("connection", socket => {
 
   socket.join(roomId);
 
-  socket.emit('setPlayerNum', userCounter);
+  let playerInfo = {
+    playerNum: userCounter,
+    roomId: roomId,
+  }
+  socket.emit('setPlayerNum', playerInfo);
 
   socket.on('nameChange', 
   function(nameData){
@@ -35,6 +39,11 @@ io.sockets.on("connection", socket => {
         player.name = nameData.name;
       }
     })
+  });
+
+  socket.on('startRoom', 
+  function(room){
+    io.to(room).emit("startGame", true);
   });
 
   socket.on("disconnect", () => {

@@ -12,7 +12,6 @@ class Player {
       b: Math.random() * 255,
     }
   }
-
 }
 
 module.exports = Player;

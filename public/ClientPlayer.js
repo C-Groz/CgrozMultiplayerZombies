@@ -6,7 +6,9 @@ class ClientPlayer{
             this.y = windowHeight/2;
             this.radius = 50;
             this.angle = 0;
-            this.number = 69;
+            this.number;
+            this.index;
+            this.roomId;
             this.index;
             this.gunIndex = 0;
     

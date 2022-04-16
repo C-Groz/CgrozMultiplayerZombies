@@ -2,7 +2,8 @@
 const socket = io.connect('http://localhost:3000');
 let gameActive = false;
 let nameInput;
-let submitNameButtom;
+let submitNameButton;
+let startGameButton;
 
 
 let players = [];
@@ -11,8 +12,13 @@ socket.on("heartbeat", function(players) {
   updateMenus(players);
   updatePlayers(players);
 });
-socket.once('setPlayerNum', function(playerNum){
-  clientPlayer.number = playerNum;
+socket.once('setPlayerNum', function(playerInfo){
+  clientPlayer.number = playerInfo.playerNum;
+  clientPlayer.roomId = playerInfo.roomId;
+
+});
+socket.once('startGame', function(p){
+  gameActive = p;
 });
 
 function setup() {
@@ -22,11 +28,17 @@ function setup() {
 
 
   nameInput = createInput('Enter Name');
-  submitNameButtom = createButton('Submit')
+  submitNameButton = createButton('Submit');
+  startGameButton = createButton('Start Game');
 
-  nameInput.position(windowWidth/2 - 100, windowHeight/2, 0);
-  submitNameButtom.position(windowWidth/2 + 50, windowHeight/2, 0);
-  submitNameButtom.mousePressed(changeName);
+  nameInput.position(windowWidth/2 - 100, windowHeight/2 + 15, 0);
+  submitNameButton.position(windowWidth/2 + 50, windowHeight/2 + 15, 0);
+  submitNameButton.mousePressed(changeName);
+  startGameButton.position(windowWidth/2 - 150, windowHeight/2 + 50, 0);
+  startGameButton.mousePressed(startGame);
+  startGameButton.size(300, 50);
+
+
 
 }
 
@@ -59,6 +71,10 @@ function draw() {
 
 
   }else{
+    nameInput.hide();
+    submitNameButton.hide();
+    startGameButton.hide();
+
 
     players.forEach(player => {
       player.draw();
@@ -72,6 +88,10 @@ function updateMenus(serverPlayers){
   players = serverPlayers;
 }
 
+function startGame(){
+  socket.emit('startRoom', clientPlayer.roomId);
+}
+
 function changeName(){
   let nameData = {
     name: nameInput.value(),
@@ -83,15 +103,22 @@ function changeName(){
 }
 
 function updatePlayers(serverPlayers) {
-  let removedPlayers = players.filter(p => serverPlayers.findIndex(s => s.id == p.id));
+  let removedPlayers = players.filter(p => serverPlayers.findIndex(s => s.id === p.id));
   for (let player of removedPlayers) {
     removePlayer(player.id);
   }
   for (let i = 0; i < serverPlayers.length; i++) {
     let playerFromServer = serverPlayers[i];
-    if (!playerExists(playerFromServer.id)) {
+    if(Object.getPrototypeOf(serverPlayers[i]) != null){
+      let tempPlayer = serverPlayers[i];
+      removePlayer(serverPlayers[i].id);
+      players.push(new Player(tempPlayer));
+
+    }
+    if(!playerExists(playerFromServer.id)) {
       players.push(new Player(playerFromServer));
     }
+    
   }
 }
 

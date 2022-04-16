@@ -3,6 +3,7 @@ class Player {
     this.x = player.x;
     this.y = player.y;
     this.id = player.id;
+    this.roomId = player.roomId;
     this.rgb = player.rgb;
     this.name = player.name;
     this.number = player.number;
