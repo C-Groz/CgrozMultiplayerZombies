@@ -11,20 +11,29 @@ let players = [];
 socket.on("heartbeat", function(players) {
   updateMenus(players);
   updatePlayers(players);
+  sendDrawData();
 });
+socket.on("updateIndex", function(indexRemoved) {
+  if(clientPlayer.index > indexRemoved){
+    clientPlayer.index--;
+  }
+});
+
 socket.once('setPlayerNum', function(playerInfo){
   clientPlayer.number = playerInfo.playerNum;
   clientPlayer.roomId = playerInfo.roomId;
-
+  clientPlayer.index = playerInfo.index;
 });
 socket.once('startGame', function(p){
   gameActive = p;
 });
 
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
   clientPlayer = new ClientPlayer();
+  clientMap = new ClientGameMap(windowWidth/2 - 300, windowHeight - 750);
 
 
   nameInput = createInput('Enter Name');
@@ -38,6 +47,13 @@ function setup() {
   startGameButton.mousePressed(startGame);
   startGameButton.size(300, 50);
 
+  this.data = {
+    winW: windowWidth,
+    winL: windowHeight,
+    decX: clientMap.decimalPlayerLocationX(),
+    decY: clientMap.decimalPlayerLocationY(),
+  }
+  socket.emit('start', this.data);
 
 
 }
@@ -74,12 +90,21 @@ function draw() {
     nameInput.hide();
     submitNameButton.hide();
     startGameButton.hide();
+    clientPlayer.drawPlayer();
+    clientMap.drawMap();
+    clientMap.move();
 
+    //players.forEach(player => {
+    //  player.draw();
+    //  player.move();
+    //});
+    sendDrawData();
 
     players.forEach(player => {
       player.draw();
-      player.move();
-    });
+    })
+
+    
   }
   
 }
@@ -112,14 +137,28 @@ function updatePlayers(serverPlayers) {
     if(Object.getPrototypeOf(serverPlayers[i]) != null){
       let tempPlayer = serverPlayers[i];
       removePlayer(serverPlayers[i].id);
-      players.push(new Player(tempPlayer));
+      players.push(new OtherPlayer(tempPlayer));
 
     }
     if(!playerExists(playerFromServer.id)) {
-      players.push(new Player(playerFromServer));
+      players.push(new OtherPlayer(playerFromServer));
     }
     
   }
+}
+function sendDrawData(){
+  if(clientMap.moveData != null && clientPlayer != null){
+    let data = {
+      index: clientMap.moveData.index,
+      decX: clientMap.moveData.decX, 
+      decY: clientMap.moveData.decY,
+      angle: clientPlayer.angle, 
+      gunIndex: clientPlayer.gunIndex,
+  }
+  socket.emit('drawData', data);
+  }
+    
+    
 }
 
 function playerExists(playerFromServer) {

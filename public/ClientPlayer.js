@@ -23,7 +23,7 @@ class ClientPlayer{
         //draws green circle in middle of screen
         drawPlayer(){
             fill(0, 150, 0);
-            circle(this.x, this.y, 50);
+            circle(this.x, this.y, 25);
         }
     
         determineAngle(){
