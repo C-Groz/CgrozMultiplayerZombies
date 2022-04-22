@@ -49,7 +49,7 @@ io.sockets.on('connection',
 
     socket.on('start', 
     function(data){
-      players.push(new Player(socket.id, roomId, userCounter, data.winL, data.winW, data.decX, data.decY, 0, players.length));
+      players.push(new Player(socket.id, roomId, userCounter, data.winL, data.winW, data.decX, data.decY, 0, players.length, 0));
     });
 
     socket.on('drawData', 

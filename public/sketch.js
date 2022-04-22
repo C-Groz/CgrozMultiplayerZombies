@@ -5,6 +5,19 @@ let nameInput;
 let submitNameButton;
 let startGameButton;
 
+let guns = [
+  //new Pistol(0,0),
+  new M1911(0,0), //0
+  new Magnum(0,0), //1
+  new Deagle(0,0), //2
+  new AK(0,0), //3 
+  new M4(0,0), //4
+  new Famas(0,0), //5
+  new MP5(0,0), //6
+  new Olympia(0,0), //7
+  new Barrett(0,0), //8
+
+]
 
 let players = [];
 //socket.on("heartbeat", players => updatePlayers(players));
