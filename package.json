@@ -1,0 +1,25 @@
+{
+  "name": "cgrozmultiplayerzombies",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/C-Groz/CgrozMultiplayerZombies.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/C-Groz/CgrozMultiplayerZombies/issues"
+  },
+  "homepage": "https://github.com/C-Groz/CgrozMultiplayerZombies#readme",
+  "dependencies": {
+    "express": "^4.17.3",
+    "node.js": "^0.0.1-security",
+    "short-uuid": "^4.2.0",
+    "socket.io": "^4.4.1"
+  }
+}
