@@ -131,9 +131,9 @@ function updateGame() {
       enemiesNum: enemiesRemaining
     }
   
-    //players.forEach(element =>{
-    //  playerKills.push(element.kills);
-    //});
+    players.forEach(element =>{
+      playerKills.push(element.kills);
+    });
 
 
     //io.sockets.emit('bulletsData', bullets);
@@ -142,7 +142,7 @@ function updateGame() {
 
     //io.sockets.emit('roundData', roundInfo);
 
-    //io.sockets.emit('killData', playerKills);
+    io.sockets.emit('killData', playerKills);
 
     //updateBullets();
     //spawnEnemies();
@@ -150,7 +150,7 @@ function updateGame() {
       //newRound();
     //}
 
-    //playerKills = [];
+    playerKills = [];
   
   }
 }

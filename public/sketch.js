@@ -6,6 +6,7 @@ let submitNameButton;
 let startGameButton;
 
 
+
 let players = [];
 let doors = [];
 //socket.on("heartbeat", players => updatePlayers(players));
@@ -27,6 +28,12 @@ socket.on("doorData", function(doorsFromServer){
     }
   }
 });
+socket.on('killData', function(playerKills){
+  if(playerKills[clientPlayer.index] > killData[clientPlayer.index]){
+      score.money += 25 * (playerKills[clientPlayer.index] - killData[clientPlayer.index]);
+  }
+  killData = playerKills;
+});
 socket.once('setPlayerNum', function(playerInfo){
   clientPlayer.number = playerInfo.playerNum;
   clientPlayer.roomId = playerInfo.roomId;
@@ -46,6 +53,7 @@ function setup() {
   clientPlayer = new ClientPlayer();
   clientMap = new ClientGameMap(windowWidth/2 - 300, windowHeight - 750);
   currentGun = new M1911(clientPlayer.x, clientPlayer.y);
+  score = new Score();
 
 
   guns = [
@@ -61,6 +69,8 @@ function setup() {
     new Barrett(0,0), //8
   
   ]
+
+  killData = [];
 
 
   nameInput = createInput('Enter Name');
@@ -144,6 +154,8 @@ function draw() {
       }
       
     });
+    score.drawScoreLayout();
+
   }
   
 }
