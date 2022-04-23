@@ -5,21 +5,9 @@ let nameInput;
 let submitNameButton;
 let startGameButton;
 
-let guns = [
-  //new Pistol(0,0),
-  new M1911(0,0), //0
-  new Magnum(0,0), //1
-  new Deagle(0,0), //2
-  new AK(0,0), //3 
-  new M4(0,0), //4
-  new Famas(0,0), //5
-  new MP5(0,0), //6
-  new Olympia(0,0), //7
-  new Barrett(0,0), //8
-
-]
 
 let players = [];
+let doors = [];
 //socket.on("heartbeat", players => updatePlayers(players));
 socket.on("heartbeat", function(players) {
   updateMenus(players);
@@ -31,15 +19,25 @@ socket.on("updateIndex", function(indexRemoved) {
     clientPlayer.index--;
   }
 });
-
+socket.on("doorData", function(doorsFromServer){
+  for(var i = 0; i < doors.length; i++){
+    if(doors[i].open != doorsFromServer[i].open){
+      doors[i].open = true;
+      clientMap.doorCoords.splice(i-2, 1);
+    }
+  }
+});
 socket.once('setPlayerNum', function(playerInfo){
   clientPlayer.number = playerInfo.playerNum;
   clientPlayer.roomId = playerInfo.roomId;
   clientPlayer.index = playerInfo.index;
 });
-socket.once('startGame', function(p){
-  gameActive = p;
+socket.once('startGame', function(startDoors){
+  doors.push(new Door(startDoors[0]));
+  doors.push(new Door(startDoors[1]));
+  gameActive = true;
 });
+
 
 
 function setup() {
@@ -47,6 +45,22 @@ function setup() {
 
   clientPlayer = new ClientPlayer();
   clientMap = new ClientGameMap(windowWidth/2 - 300, windowHeight - 750);
+  currentGun = new M1911(clientPlayer.x, clientPlayer.y);
+
+
+  guns = [
+    //new Pistol(0,0),
+    new M1911(0,0), //0
+    new Magnum(0,0), //1
+    new Deagle(0,0), //2
+    new AK(0,0), //3 
+    new M4(0,0), //4
+    new Famas(0,0), //5
+    new MP5(0,0), //6
+    new Olympia(0,0), //7
+    new Barrett(0,0), //8
+  
+  ]
 
 
   nameInput = createInput('Enter Name');
@@ -103,21 +117,33 @@ function draw() {
     nameInput.hide();
     submitNameButton.hide();
     startGameButton.hide();
-    clientPlayer.drawPlayer();
-    clientMap.drawMap();
+    clientPlayer.determineAngle();
     clientMap.move();
-
-    //players.forEach(player => {
-    //  player.draw();
-    //  player.move();
-    //});
     sendDrawData();
 
     players.forEach(player => {
       player.draw();
     })
-
     
+    clientPlayer.drawPlayer();
+    currentGun.drawGun(clientPlayer.x, clientPlayer.y, clientPlayer.angle);
+    clientMap.drawMap();
+
+    doors.forEach(door => {
+      
+      door.draw();
+      if(door.playerInProximity() && !door.open){
+        door.offerInteraction();
+        if(keyIsDown(70) && !door.pickedUpBool){
+          door.userInteracted();
+          door.pickedUpBool = true;
+        }
+        if(!keyIsDown(70)){
+          door.pickedUpBool = false;
+        }
+      }
+      
+    });
   }
   
 }
@@ -156,8 +182,11 @@ function updatePlayers(serverPlayers) {
     if(!playerExists(playerFromServer.id)) {
       players.push(new OtherPlayer(playerFromServer));
     }
-    
   }
+  for(var i = 0; i < players.length; i++){
+    players[i].gun = guns[players[i].gun];
+}
+
 }
 function sendDrawData(){
   if(clientMap.moveData != null && clientPlayer != null){

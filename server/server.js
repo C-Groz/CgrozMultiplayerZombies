@@ -4,6 +4,7 @@ const app = express();
 const short = require('short-uuid');
 
 const Player = require("./Player");
+const Door = require("./Door");
 
 const ROOM_MAX_CAPACITY = 4;
 
@@ -14,6 +15,7 @@ const io = socket(server);
 
 const rooms = [short.generate()];
 let players = [];
+let doors = [];
 let userCounter = 0;
 var doorsActive;
 var currentDoorCoords;
@@ -39,7 +41,7 @@ var spawnsActive = [0, 2];
 var timeBetweenEnemies = 1000; 
 var lastEnemySpawn = Date.now();
 var enemyCounter;
-setInterval(updateGame, 16);
+setInterval(updateGame, 10); //default 16 
 
 io.sockets.on('connection', 
   function(socket) {
@@ -61,39 +63,6 @@ io.sockets.on('connection',
                 players[data.index].angle = data.angle;
                 players[data.index].gun = data.gunIndex;
             }
-
-            doorData = {
-                doorsActive: doorsActive,
-                doorCoords: currentDoorCoords,
-            }
-            roundInfo = {
-                roundNum: round,
-                enemiesNum: enemiesRemaining
-            }
-            
-            players.forEach(element =>{
-                playerKills.push(element.kills);
-            });
-
-            //io.sockets.emit("doorData", doorData);
-
-            //io.sockets.emit('bulletsData', bullets);
-
-            //io.sockets.emit('enemyData', enemies);
-
-            //io.sockets.emit('roundData', roundInfo);
-
-            //io.sockets.emit('killData', playerKills);
-
-            //updateBullets();
-            //spawnEnemies();
-            if(enemiesRemaining <= 0 && enemies.length == 0 && enemyCounter == roundEnemyAmount){
-                //newRound();
-            }
-
-            playerKills = [];
-            
-            
         });
 
     var roomId = getRoom();
@@ -115,9 +84,21 @@ io.sockets.on('connection',
       })
     });
 
-    socket.on('startRoom', 
+    socket.on('openDoor', function(doorData){
+      console.log(doorData.doorNum + " " + doorData.roomId)
+      doors.forEach(door => {
+        if(door.roomId == doorData.roomId && door.doorNum == doorData.doorNum){
+          door.open = true;
+        }
+      })
+    })
+
+    socket.once('startRoom', 
     function(room){
-      io.to(room).emit("startGame", true);
+      doors.push(new Door(1, room, 1000, 600, 200, 30, 200, 50, 25, [1, 5]))
+      doors.push(new Door(2, room, 1000, 700, 700, 30, 200, 50, 25, [3, 4]))
+      let doorsInRoomStart = doors.filter(d => d.roomId == room);
+      io.to(room).emit("startGame", doorsInRoomStart);
     });
 
    
@@ -126,7 +107,9 @@ io.sockets.on('connection',
       //io.sockets.emit("disconnect", socket.id);
       tempPlayer = players.filter(player => player.id == socket.id);
       players = players.filter(player => player.id !== socket.id);
-      updateIndexes(tempPlayer[0].index);
+      if(tempPlayer != null){
+        updateIndexes(tempPlayer[0].index);
+      }
     });
     
   
@@ -139,7 +122,36 @@ io.sockets.on('connection',
 function updateGame() {
   for (const room of rooms) {
     const playersInRoom = players.filter(p => p.roomId === room);
+    const doorsInRoom = doors.filter(d => d.roomId === room);
     io.to(room).emit("heartbeat", playersInRoom);
+    io.to(room).emit("doorData", doorsInRoom);
+
+    roundInfo = {
+      roundNum: round,
+      enemiesNum: enemiesRemaining
+    }
+  
+    //players.forEach(element =>{
+    //  playerKills.push(element.kills);
+    //});
+
+
+    //io.sockets.emit('bulletsData', bullets);
+
+    //io.sockets.emit('enemyData', enemies);
+
+    //io.sockets.emit('roundData', roundInfo);
+
+    //io.sockets.emit('killData', playerKills);
+
+    //updateBullets();
+    //spawnEnemies();
+    //if(enemiesRemaining <= 0 && enemies.length == 0 && enemyCounter == roundEnemyAmount){
+      //newRound();
+    //}
+
+    //playerKills = [];
+  
   }
 }
 

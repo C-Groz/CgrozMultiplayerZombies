@@ -9,7 +9,7 @@ class OtherPlayer {
     this.decX = player.decX;
     this.decY = player.decY;
     this.angle = player.angle;
-    //this.gun = player.gun; //index of gun type in guns array in sketch
+    this.gun = player.gun; //index of gun type in guns array in sketch
     this.kills = player.kills;
     this.index = player.index;
   }
@@ -22,7 +22,7 @@ class OtherPlayer {
       let y = this.returnPlayerLocationY(this.decY);
       circle(x, y, 25);
   
-      //this.gun.drawGun(x, y, players[i].angle);
+      this.gun.drawGun(x, y, this.angle);
   
       textSize(30);
       text("" + this.name, x, y - 40);
