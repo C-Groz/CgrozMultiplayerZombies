@@ -80,6 +80,10 @@ function setup() {
   
   ]
 
+  wallGuns = [
+    this.topGunPickup = new WallGun(150, -40, new Olympia(clientPlayer.x, clientPlayer.y)),
+]
+
   killData = [];
 
 
@@ -158,6 +162,9 @@ function draw() {
     clientPlayer.drawPlayer();
     currentGun.drawGun(clientPlayer.x, clientPlayer.y, clientPlayer.angle);
     clientMap.drawMap();
+    wallGuns.forEach(wallGun => {
+      wallGun.drawPickup();
+    })
 
     doors.forEach(door => {
       
@@ -177,6 +184,19 @@ function draw() {
     score.drawScoreLayout();
 
   }
+
+  wallGuns.forEach(element => {
+    if(element.playerInProximity()){
+      element.offerPickup();
+      if(keyIsDown(70) && !element.pickedUpBool){
+        element.userPickedUp();
+        element.pickedUpBool = true;
+      }
+      if(!keyIsDown(70)){
+        element.pickedUpBool = false;
+      }
+    }
+});
   
 }
 

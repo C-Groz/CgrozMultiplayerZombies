@@ -23,7 +23,7 @@ class Shotgun {
         //gun stats
         
         this.damage = 40; // per bullet(5)
-        this.bulletVelocity = 20;
+        this.bulletVelocity = 13;
         this.name = "Shotgun";
         this.textSize = 22;
         this.yDisplacement = 33;

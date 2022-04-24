@@ -60,11 +60,8 @@ class ClientGameMap {
             for(var i = 0; i < this.coords.length; i++){
                 rect(this.coords[i][0] + this.x, this.coords[i][1] + this.y, this.coords[i][2], this.coords[i][3] )
             }
-            //this.drawBullets(currentBullets);
-            //this.drawOtherPlayers(connectedUsersData);
-            //this.drawDoors();
             //this.drawPickups();
-            //this.drawSpawns();
+            this.drawSpawns();
             //this.drawEnemies(enemiesData);
         }
     
@@ -201,7 +198,7 @@ class ClientGameMap {
         }
     
         drawPickups(){
-            this.pickups.forEach(element => {
+            wallGuns.forEach(element => {
                 element.drawPickup();
             });
         }
