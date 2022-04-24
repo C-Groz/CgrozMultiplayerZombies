@@ -25,26 +25,10 @@ let doors = [];
 let roundInfos = [];
 let userCounter = 0;
 let bullets = [];
-var enemyRandomSpawnVariable = Math.random();
-var enemySpawns = [
-    //x   y   l    w   xdev            ydev
-    [300, -5, 100, 10, 100, 0], //spawn 0 (top left)
-    [1100, -5, 100, 10, 100, 0], //spawn 1 (top right)
-    [-5, 300, 10, 100, 0, 100], //spawn 2 (left top)
-    [-5, 800, 10, 100, 0, 100], //spawn 3 (left bottom)
-    [500, 995, 100, 10, 100, 0], //spawn 4 (bottom left)
-    [1300, 995, 100, 10, 100, 0], //spawn 5 (bottom right)
-]
 var enemies = []
 var mapData;
-var roundEnemyAmount;
-var round = 1;
-var enemiesRemaining = enemies.length;
 var playerKills = [];
 var spawnsActive = [0, 2];
-var timeBetweenEnemies = 1000; 
-var lastEnemySpawn = Date.now();
-var enemyCounter;
 setInterval(updateGame, 5); //default 16 
 
 io.sockets.on('connection', 
@@ -247,7 +231,7 @@ function removeEnemy(index, roomId){
 function spawnEnemies(roundInfo){
   if(((roundInfo.lastEnemySpawn + roundInfo.timeBetweenEnemies) < Date.now()) && (roundInfo.enemyCounter < roundInfo.roundEnemyAmount)){
       roundInfo.enemyRandomSpawnVariable = Math.random();
-      enemies.push(new Enemy(spawnsActive[Math.trunc((spawnsActive.length) * Math.random())], enemies.length, 10, 25, .5, roundInfo.roomId, roundInfo.enemyRandomSpawnVariable));
+      enemies.push(new Enemy(roundInfo.spawnsActive[Math.trunc((roundInfo.spawnsActive.length) * Math.random())], enemies.length, 10, 25, .5, roundInfo.roomId, roundInfo.enemyRandomSpawnVariable));
       roundInfo.lastEnemySpawn = Date.now();
       roundInfo.enemyCounter++;
   }

@@ -9,6 +9,7 @@ class RoundInfo{
         this.enemyCounter = 0;
         this.roundEnemyAmount = 0;
         this.enemyRandomSpawnVariable;
+        this.spawnsActive = [0,2];
     }
 }
 
