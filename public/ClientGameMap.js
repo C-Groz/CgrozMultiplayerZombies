@@ -62,7 +62,7 @@ class ClientGameMap {
             }
             //this.drawPickups();
             this.drawSpawns();
-            //this.drawEnemies(enemiesData);
+            this.drawEnemies(enemiesData);
         }
     
         move(){
@@ -162,7 +162,7 @@ class ClientGameMap {
                 if(enemy != null){
                     enemy.healthPercent = enemy.health / enemy.initialHealth * 100;
                     fill(60 + enemy.healthPercent/2.5, 10, 10);
-                    circle(enemy.x + this.x, enemy.y + this.y, 50);
+                    circle(enemy.x + this.x, enemy.y + this.y, 25);
                     //textSize(30);
                     //text(enemy.index, enemy.x + this.x, enemy.y - 30 + this.y);
                 }

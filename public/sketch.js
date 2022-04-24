@@ -39,10 +39,23 @@ socket.on('bulletData', function(bulletsFromServer){
   bullets = bulletsFromServer;
 });
 
+socket.on('enemyData', function(enemies){
+  enemiesData = enemies;
+});
+
+socket.on("roundData", function(roundInfo){
+  if(roundInfo[0] != null){
+    score.round = roundInfo[0].round;
+    score.enemiesRemaining = roundInfo[0].enemiesRemaining;
+  }
+});
+
 socket.once('setPlayerNum', function(playerInfo){
   clientPlayer.number = playerInfo.playerNum;
   clientPlayer.roomId = playerInfo.roomId;
   clientPlayer.index = playerInfo.index;
+  clientPlayer.roomIndex = playerInfo.roomIndex;
+
 });
 socket.once('startGame', function(startDoors){
   doors.push(new Door(startDoors[0]));
@@ -85,6 +98,7 @@ function setup() {
 ]
 
   killData = [];
+  enemiesData = [];
 
 
   nameInput = createInput('Enter Name');
@@ -149,7 +163,7 @@ function draw() {
 
     players.forEach(player => {
       player.draw();
-    })
+    });
 
     //reload
     if((keyIsDown(82) && !score.reloading) || score.ammoIn == 0 && !score.reloading){

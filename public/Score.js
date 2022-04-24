@@ -1,7 +1,6 @@
 class Score{
     constructor(){
         this.round;
-        this.kills = 0;
         this.money = 1000;
         this.enemiesRemaining;
         this.playerHealth = 100;
@@ -11,11 +10,6 @@ class Score{
     }
 //
     drawScoreLayout(){
-
-        //if(killData[clientPlayer.index] != null){
-        //    this.kills = killData[clientPlayer.index];
-        //}
-
 
         //bottom right menu (round, kills, money, enemies)
         fill(185, 185, 185)
@@ -28,7 +22,7 @@ class Score{
         fill(185, 0, 0)
         textSize(25);
         text("Round " + this.round, rectX + rectXlen/2, rectY + 40);
-        text("Kills: " + this.kills, rectX + rectXlen/2, rectY + 80);
+        text("Kills: " + players[clientPlayer.roomIndex].kills, rectX + rectXlen/2, rectY + 80);
         text("Money: $" + this.money, rectX + rectXlen/2, rectY + 120);
         text("Enemies: " + this.enemiesRemaining, rectX + rectXlen/2, rectY + 160);
 

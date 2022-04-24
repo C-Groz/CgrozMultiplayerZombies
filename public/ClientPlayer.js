@@ -9,7 +9,7 @@ class ClientPlayer{
             this.number;
             this.index;
             this.roomId;
-            this.index;
+            this.roomIndex;
             this.gunIndex = 0;
     
             this.topY = this.y - 28;

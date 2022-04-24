@@ -6,6 +6,10 @@ const short = require('short-uuid');
 const Player = require("./Player");
 const Door = require("./Door");
 const Bullet = require("./Bullet");
+const Enemy = require("./Enemy");
+const RoundInfo = require("./RoundInfo");
+
+
 
 
 const ROOM_MAX_CAPACITY = 4;
@@ -18,6 +22,7 @@ const io = socket(server);
 const rooms = [short.generate()];
 let players = [];
 let doors = [];
+let roundInfos = [];
 let userCounter = 0;
 let bullets = [];
 var enemyRandomSpawnVariable = Math.random();
@@ -30,10 +35,7 @@ var enemySpawns = [
     [500, 995, 100, 10, 100, 0], //spawn 4 (bottom left)
     [1300, 995, 100, 10, 100, 0], //spawn 5 (bottom right)
 ]
-var enemies = [
-    //new Enemy(0, 0, 10, 25, .5),
-    //new Enemy(2, 1, 10, 25, .5),
-]
+var enemies = []
 var mapData;
 var roundEnemyAmount;
 var round = 1;
@@ -78,10 +80,13 @@ io.sockets.on('connection',
     var roomId = getRoom();
     socket.join(roomId);
 
+    var playersInRoom = players.filter(p => p.roomId == roomId);
+
     let playerInfo = {
       playerNum: userCounter,
       roomId: roomId,
       index: players.length,
+      roomIndex: playersInRoom.length,
     }
     socket.emit('setPlayerNum', playerInfo);
 
@@ -111,6 +116,9 @@ io.sockets.on('connection',
     function(room){
       doors.push(new Door(1, room, 1000, 600, 200, 30, 200, 50, 25, [1, 5]))
       doors.push(new Door(2, room, 1000, 700, 700, 30, 200, 50, 25, [3, 4]))
+      enemies.push(new Enemy(0, enemies.length, 10, 25, .5, room, 0));
+      enemies.push(new Enemy(2, enemies.length, 10, 25, .5, room, 0));
+      roundInfos.push(new RoundInfo(room, roundInfos.length));
       let doorsInRoomStart = doors.filter(d => d.roomId == room);
       io.to(room).emit("startGame", doorsInRoomStart);
     });
@@ -137,32 +145,31 @@ function updateGame() {
   for (const room of rooms) {
     const playersInRoom = players.filter(p => p.roomId === room);
     const doorsInRoom = doors.filter(d => d.roomId === room);
-    const bulletsInRoom = bullets.filter(b => b.roomId === room)
+    const bulletsInRoom = bullets.filter(b => b.roomId === room);
+    const enemiesInRoom = enemies.filter(e => e.roomId === room);
+    const roundInfo = roundInfos.filter(r => r.roomId === room);
     io.to(room).emit("heartbeat", playersInRoom);
     io.to(room).emit("doorData", doorsInRoom);
     io.to(room).emit('bulletData', bulletsInRoom);
-
-
-    roundInfo = {
-      roundNum: round,
-      enemiesNum: enemiesRemaining
-    }
+    io.to(room).emit('enemyData', enemiesInRoom);
+    io.to(room).emit('roundData', roundInfo);
   
     players.forEach(element =>{
       playerKills.push(element.kills);
     });
 
-    //io.sockets.emit('enemyData', enemies);
-
-    //io.sockets.emit('roundData', roundInfo);
-
     io.sockets.emit('killData', playerKills);
 
-    //updateBullets();
-    //spawnEnemies();
-    //if(enemiesRemaining <= 0 && enemies.length == 0 && enemyCounter == roundEnemyAmount){
-      //newRound();
-    //}
+    if(roundInfo[0] != null){
+      if(roundInfo[0].enemiesRemaining <= 0 && enemiesInRoom.length == 0 && roundInfo[0].enemyCounter == roundInfo[0].roundEnemyAmount){
+        roundInfos[roundInfo[0].index].round++;
+        roundInfos[roundInfo[0].index].enemyCounter = 0;
+        roundInfos[roundInfo[0].index].roundEnemyAmount = 2 * roundInfos[roundInfo[0].index].round + 4;
+        roundInfos[roundInfo[0].index].enemiesRemaining = roundInfos[roundInfo[0].index].roundEnemyAmount;
+      }
+      spawnEnemies(roundInfos[roundInfo[0].index]);
+    }
+
 
     playerKills = [];
     updateBullets();
@@ -218,6 +225,34 @@ function enemyContainsBullet(enemyX, enemyY, bulletX, bulletY){
   return false;
 }
 
+function removeEnemy(index, roomId){
+  var enemiesTemp = [];
+  enemies.splice(index, 1);
+  if(enemies.length > 0){
+      for(var i = 0; i < index; i++){
+          enemiesTemp.push(enemies[i]);
+      }
+      for(var i = index; i < enemies.length; i++){
+          if(enemies[i] != null){   
+              enemies[i].index--;
+              enemiesTemp.push(enemies[i]);
+          }
+      }
+  }
+  enemies = enemiesTemp;
+  let roundInfo = roundInfos.filter(r => r.roomId == roomId);
+  roundInfos[roundInfo[0].index].enemiesRemaining--;
+}
+
+function spawnEnemies(roundInfo){
+  if(((roundInfo.lastEnemySpawn + roundInfo.timeBetweenEnemies) < Date.now()) && (roundInfo.enemyCounter < roundInfo.roundEnemyAmount)){
+      roundInfo.enemyRandomSpawnVariable = Math.random();
+      enemies.push(new Enemy(spawnsActive[Math.trunc((spawnsActive.length) * Math.random())], enemies.length, 10, 25, .5, roundInfo.roomId, roundInfo.enemyRandomSpawnVariable));
+      roundInfo.lastEnemySpawn = Date.now();
+      roundInfo.enemyCounter++;
+  }
+}
+
 function updateBullets(){
 
   if(bullets.length != 0){
@@ -237,32 +272,26 @@ function updateBullets(){
               }
           });
           
-          /*
           enemies.forEach(enemy => {
-              if(bullets[i] != null && enemy != null){
-                  if(enemyContainsBullet(enemy.x, enemy.y, bullets[i].x, bullets[i].y)){
-                      if(enemy.bulletInEnemy != i && bullets[i].bulletInEnemy != enemy.index){
-                          enemy.health -= bullets[i].damage;
-                          enemy.healthPercent = enemy.health/enemy.initialHealth;
-                      }
-                      enemy.bulletInEnemy = i;
-                      bullets[i].bulletInEnemy = enemy.index;
-                  }else if(enemy.bulletInEnemy == i){
-                      enemy.bulletInEnemy = -1;
+            if(bullets[i] != null && enemy != null && enemy.roomId == bullets[i].roomId){
+              if(enemyContainsBullet(enemy.x, enemy.y, bullets[i].x, bullets[i].y)){
+                  if(enemy.bulletInEnemy != i && bullets[i].bulletInEnemy != enemy.index && enemy.roomId == bullets[i].roomId){
+                      enemy.health -= bullets[i].damage;
+                      enemy.healthPercent = enemy.health/enemy.initialHealth;
                   }
+                  enemy.bulletInEnemy = i;
+                  bullets[i].bulletInEnemy = enemy.index;
+              }else if(enemy.bulletInEnemy == i){
+                  enemy.bulletInEnemy = -1;
+              }
 
-                  if(enemy.health <= 0){
-                      connectedUsers[bullets[i].playerFired].kills++;
-                      removeEnemy(enemy.index);
-                      console.log("removed Enemy: " + enemy.index);
-                  }
-                  }
+              if(enemy.health <= 0){
+                  players[bullets[i].playerFired].kills++;
+                  removeEnemy(enemy.index, enemy.roomId);
+              }
+          }
 
-
-
-                  
           });
-          */
           if(bullets[i] != null){
               bullets[i].x += bullets[i].velocity * Math.cos(bullets[i].angle) + (bullets[i].sprayDeviation * Math.sin(bullets[i].angle));
               bullets[i].y += bullets[i].velocity * Math.sin(bullets[i].angle) - (bullets[i].sprayDeviation * Math.cos(bullets[i].angle));
