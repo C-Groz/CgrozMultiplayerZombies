@@ -28,7 +28,6 @@ let bullets = [];
 var enemies = []
 var mapData;
 var playerKills = [];
-var spawnsActive = [0, 2];
 setInterval(updateGame, 5); //default 16 
 
 io.sockets.on('connection', 
@@ -87,6 +86,10 @@ io.sockets.on('connection',
       doors.forEach(door => {
         if(door.roomId == doorData.roomId && door.doorNum == doorData.doorNum){
           door.open = true;
+          let roundInfo = roundInfos.filter(r => r.roomId == doorData.roomId);
+          doorData.spawnsActivate.forEach(spawn => {
+            roundInfos[roundInfo[0].index].spawnsActive.push(spawn);
+          });
         }
       })
     })

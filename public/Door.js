@@ -44,18 +44,12 @@ class Door{
     openDoor(){
         let doorData = {
             doorNum: this.doorNum,
-            roomId: clientPlayer.roomId
+            roomId: clientPlayer.roomId,
+            spawnsActivate: this.activateSpawns,
         }
         socket.emit("openDoor", doorData);
 
-
-
         score.money -= this.cost;
-
-        //this.activateSpawns.forEach(element => {
-
-        //    spawnsActive.push(element);
-        //});
     }
 
     rectangleContains(rectX, rectY, rectL, rectW, x, y){
