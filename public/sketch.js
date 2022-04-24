@@ -95,7 +95,7 @@ function setup() {
 
   wallGuns = [
     this.topGunPickup = new WallGun(150, -40, new Olympia(clientPlayer.x, clientPlayer.y)),
-]
+  ]
 
   killData = [];
   enemiesData = [];

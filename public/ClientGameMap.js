@@ -41,10 +41,6 @@ class ClientGameMap {
                 [1300, 995, 100, 10], //spawn 5 (bottom right)
             ]
     
-            this.pickups = [
-                //this.topGunPickup = new WallGun(150, -40, new Olympia(clientPlayer.x, clientPlayer.y)),
-            ]
-    
             let mapCoords = {
                 rectCoords: this.coords,
                 doorCoords: this.doorCoords,
