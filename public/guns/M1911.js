@@ -6,7 +6,7 @@ class M1911 extends Pistol{
         this.startingOut = 120;
         this.reloadTime = 800;
         this.damage = 20;
-        this.bulletVelocity = 20;
+        this.bulletVelocity = 8;
         this.name = "M1911";
         this.textSize = 45;
         this.yDisplacement = 40;

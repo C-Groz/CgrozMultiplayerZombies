@@ -5,6 +5,8 @@ const short = require('short-uuid');
 
 const Player = require("./Player");
 const Door = require("./Door");
+const Bullet = require("./Bullet");
+
 
 const ROOM_MAX_CAPACITY = 4;
 
@@ -17,8 +19,7 @@ const rooms = [short.generate()];
 let players = [];
 let doors = [];
 let userCounter = 0;
-var doorsActive;
-var currentDoorCoords;
+let bullets = [];
 var enemyRandomSpawnVariable = Math.random();
 var enemySpawns = [
     //x   y   l    w   xdev            ydev
@@ -33,6 +34,7 @@ var enemies = [
     //new Enemy(0, 0, 10, 25, .5),
     //new Enemy(2, 1, 10, 25, .5),
 ]
+var mapData;
 var roundEnemyAmount;
 var round = 1;
 var enemiesRemaining = enemies.length;
@@ -41,7 +43,7 @@ var spawnsActive = [0, 2];
 var timeBetweenEnemies = 1000; 
 var lastEnemySpawn = Date.now();
 var enemyCounter;
-setInterval(updateGame, 10); //default 16 
+setInterval(updateGame, 5); //default 16 
 
 io.sockets.on('connection', 
   function(socket) {
@@ -56,14 +58,22 @@ io.sockets.on('connection',
 
     socket.on('drawData', 
 
-        function(data){
-            if(players[data.index] != null){
-                players[data.index].decY = data.decY;
-                players[data.index].decX = data.decX;
-                players[data.index].angle = data.angle;
-                players[data.index].gun = data.gunIndex;
-            }
-        });
+      function(data){
+          if(players[data.index] != null){
+              players[data.index].decY = data.decY;
+              players[data.index].decX = data.decX;
+              players[data.index].angle = data.angle;
+              players[data.index].gun = data.gunIndex;
+          }       
+      });
+
+    socket.on('bulletFired', 
+
+    function(bulletData){
+        if(bulletData.startX != null){
+          bullets.push(new Bullet(bulletData.startX, bulletData.startY, bulletData.angle, bulletData.damage, bulletData.velocity, bulletData.sprayDeviation, bulletData.playerFired, bulletData.roomId));
+        }
+    });
 
     var roomId = getRoom();
     socket.join(roomId);
@@ -85,14 +95,18 @@ io.sockets.on('connection',
     });
 
     socket.on('openDoor', function(doorData){
-      console.log(doorData.doorNum + " " + doorData.roomId)
       doors.forEach(door => {
         if(door.roomId == doorData.roomId && door.doorNum == doorData.doorNum){
           door.open = true;
         }
       })
     })
+    socket.once('mapData', 
 
+    function(mapCoords){
+        mapData = mapCoords;
+        currentDoorCoords = mapCoords.doorCoords;
+    });
     socket.once('startRoom', 
     function(room){
       doors.push(new Door(1, room, 1000, 600, 200, 30, 200, 50, 25, [1, 5]))
@@ -123,8 +137,11 @@ function updateGame() {
   for (const room of rooms) {
     const playersInRoom = players.filter(p => p.roomId === room);
     const doorsInRoom = doors.filter(d => d.roomId === room);
+    const bulletsInRoom = bullets.filter(b => b.roomId === room)
     io.to(room).emit("heartbeat", playersInRoom);
     io.to(room).emit("doorData", doorsInRoom);
+    io.to(room).emit('bulletData', bulletsInRoom);
+
 
     roundInfo = {
       roundNum: round,
@@ -134,9 +151,6 @@ function updateGame() {
     players.forEach(element =>{
       playerKills.push(element.kills);
     });
-
-
-    //io.sockets.emit('bulletsData', bullets);
 
     //io.sockets.emit('enemyData', enemies);
 
@@ -151,6 +165,7 @@ function updateGame() {
     //}
 
     playerKills = [];
+    updateBullets();
   
   }
 }
@@ -183,6 +198,79 @@ function getRoom() {
     leastPopulatedRoom = newRoom; 
   }
   return leastPopulatedRoom;
+}
+
+function rectangleContains(x, y, rectX, rectY, rectL, rectW){
+  if((x > rectX) && (x < rectX + rectL) && (y > rectY) && (y < rectY + rectW)){
+      return true;
+  }
+  return false
+}
+
+function enemyContainsBullet(enemyX, enemyY, bulletX, bulletY){
+  if(bulletX == null || enemyX == null){
+      return false;
+  }
+  var distance = Math.sqrt(Math.pow(enemyX - bulletX, 2) + Math.pow(enemyY - bulletY, 2));
+  if(distance <=30){
+      return true;
+  }
+  return false;
+}
+
+function updateBullets(){
+
+  if(bullets.length != 0){
+      for(var i = 0; i < bullets.length; i++){
+          mapData.rectCoords.forEach(element => {
+              if(bullets[i] != null){
+                  if(rectangleContains(bullets[i].x, bullets[i].y, element[0], element[1], element[2], element[3])){
+                      bullets.splice(i, 1);
+                  }
+              }
+          });
+          doors.forEach(door => {
+              if(bullets[i] != null && !door.open && door.roomId == bullets[i].roomId){
+                  if(rectangleContains(bullets[i].x, bullets[i].y, door.x, door.y, door.l, door.w)){
+                      bullets.splice(i, 1);
+                  }
+              }
+          });
+          
+          /*
+          enemies.forEach(enemy => {
+              if(bullets[i] != null && enemy != null){
+                  if(enemyContainsBullet(enemy.x, enemy.y, bullets[i].x, bullets[i].y)){
+                      if(enemy.bulletInEnemy != i && bullets[i].bulletInEnemy != enemy.index){
+                          enemy.health -= bullets[i].damage;
+                          enemy.healthPercent = enemy.health/enemy.initialHealth;
+                      }
+                      enemy.bulletInEnemy = i;
+                      bullets[i].bulletInEnemy = enemy.index;
+                  }else if(enemy.bulletInEnemy == i){
+                      enemy.bulletInEnemy = -1;
+                  }
+
+                  if(enemy.health <= 0){
+                      connectedUsers[bullets[i].playerFired].kills++;
+                      removeEnemy(enemy.index);
+                      console.log("removed Enemy: " + enemy.index);
+                  }
+                  }
+
+
+
+                  
+          });
+          */
+          if(bullets[i] != null){
+              bullets[i].x += bullets[i].velocity * Math.cos(bullets[i].angle) + (bullets[i].sprayDeviation * Math.sin(bullets[i].angle));
+              bullets[i].y += bullets[i].velocity * Math.sin(bullets[i].angle) - (bullets[i].sprayDeviation * Math.cos(bullets[i].angle));
+          }
+      }
+  }
+      
+  
 }
 
 

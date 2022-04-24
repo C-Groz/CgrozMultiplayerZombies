@@ -9,6 +9,7 @@ let startGameButton;
 
 let players = [];
 let doors = [];
+let bullets = [];
 //socket.on("heartbeat", players => updatePlayers(players));
 socket.on("heartbeat", function(players) {
   updateMenus(players);
@@ -34,6 +35,10 @@ socket.on('killData', function(playerKills){
   }
   killData = playerKills;
 });
+socket.on('bulletData', function(bulletsFromServer){
+  bullets = bulletsFromServer;
+});
+
 socket.once('setPlayerNum', function(playerInfo){
   clientPlayer.number = playerInfo.playerNum;
   clientPlayer.roomId = playerInfo.roomId;
@@ -42,6 +47,11 @@ socket.once('setPlayerNum', function(playerInfo){
 socket.once('startGame', function(startDoors){
   doors.push(new Door(startDoors[0]));
   doors.push(new Door(startDoors[1]));
+  let mapCoords = {
+    rectCoords: clientMap.coords,
+    doorCoords: clientMap.doorCoords,
+  }
+  socket.emit('mapData', mapCoords);
   gameActive = true;
 });
 
@@ -129,11 +139,21 @@ function draw() {
     startGameButton.hide();
     clientPlayer.determineAngle();
     clientMap.move();
+    currentGun.shoot();
+    drawBullets();
     sendDrawData();
 
     players.forEach(player => {
       player.draw();
     })
+
+    //reload
+    if((keyIsDown(82) && !score.reloading) || score.ammoIn == 0 && !score.reloading){
+      currentGun.startReload();
+    }
+    if(score.reloading && currentGun.tempTimeEnd < millis()){
+      currentGun.reload();
+    }
     
     clientPlayer.drawPlayer();
     currentGun.drawGun(clientPlayer.x, clientPlayer.y, clientPlayer.angle);
@@ -211,9 +231,44 @@ function sendDrawData(){
   }
   socket.emit('drawData', data);
   }
-    
-    
 }
+
+function drawBullets(){
+  fill(0, 0, 0)
+  bullets.forEach(element => {
+      circle(element.x + clientMap.x, element.y + clientMap.y, 2.5);
+  });
+}
+
+function sendBulletData(){
+  let bulletData = {
+      startX: clientPlayer.x - clientMap.x + currentGun.bulletDisplacement*cos(clientPlayer.angle),
+      startY: clientPlayer.y - clientMap.y + currentGun.bulletDisplacement*sin(clientPlayer.angle),
+      damage: currentGun.damage,
+      velocity: currentGun.bulletVelocity,
+      angle: clientPlayer.angle,
+      sprayDeviation: 0,
+      playerFired: clientPlayer.index,
+      roomId: clientPlayer.roomId,
+  }
+  socket.emit('bulletFired', bulletData);
+}
+
+function sendBulletDataShotgun(sprayDeviation){
+  let bulletData = {
+      startX: clientPlayer.x - clientMap.x + currentGun.bulletDisplacement*cos(clientPlayer.angle),
+      startY: clientPlayer.y - clientMap.y + currentGun.bulletDisplacement*sin(clientPlayer.angle),
+      damage: currentGun.damage,
+      velocity: currentGun.bulletVelocity,
+      angle: clientPlayer.angle,
+      sprayDeviation: sprayDeviation,
+      playerFired: clientPlayer.index,
+      roomId: clientPlayer.roomId,
+
+  }
+  socket.emit('bulletFired', bulletData);
+}
+
 
 function playerExists(playerFromServer) {
   for (let i = 0; i < players.length; i++) {

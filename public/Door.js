@@ -28,9 +28,9 @@ class Door{
     }
 
     userInteracted(){
-        //if(score.money >= this.cost){
+        if(score.money >= this.cost){
         this.openDoor();
-        //}
+        }
     }
 
     offerInteraction(){
@@ -50,7 +50,7 @@ class Door{
 
 
 
-        //score.money -= this.cost;
+        score.money -= this.cost;
 
         //this.activateSpawns.forEach(element => {
         //    spawnsActive.push(element);

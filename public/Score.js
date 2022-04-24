@@ -60,7 +60,7 @@ class Score{
         //reload
         if(this.reloading){
             textSize(40);
-            text("Reloading", windowWidth/2 - 70, clientPlayer.y + 300);
+            text("Reloading", windowWidth/2, clientPlayer.y + 300);
         }
         
 
