@@ -12,6 +12,8 @@ class OtherPlayer {
     this.gun = player.gun; //index of gun type in guns array in sketch
     this.kills = player.kills;
     this.index = player.index;
+    this.x = player.x;
+    this.y = player.y;
   }
 
 

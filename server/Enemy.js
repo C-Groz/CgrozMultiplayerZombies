@@ -23,6 +23,13 @@ class Enemy{
         this.healthPercent = 100;
         this.bulletInEnemy = -1;
         this.roomId = roomId;
+        this.Xspeed = 0;
+        this.Yspeed = 0;
+        this.xClearPos = true;
+        this.xClearNeg = true;
+        this.yClearPos = true;
+        this.yClearNeg = true;
+
     }   
     
 }

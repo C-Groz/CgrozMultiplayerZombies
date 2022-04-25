@@ -103,8 +103,8 @@ io.sockets.on('connection',
     function(room){
       doors.push(new Door(1, room, 1000, 600, 200, 30, 200, 50, 25, [1, 5]))
       doors.push(new Door(2, room, 1000, 700, 700, 30, 200, 50, 25, [3, 4]))
-      enemies.push(new Enemy(0, enemies.length, 10, 25, .5, room, 0));
-      enemies.push(new Enemy(2, enemies.length, 10, 25, .5, room, 0));
+      enemies.push(new Enemy(0, enemies.length, .5, 25, .25, room, 0));
+      enemies.push(new Enemy(2, enemies.length, .5, 25, .25, room, 0));
       roundInfos.push(new RoundInfo(room, roundInfos.length));
       let doorsInRoomStart = doors.filter(d => d.roomId == room);
       io.to(room).emit("startGame", doorsInRoomStart);
@@ -143,6 +143,8 @@ function updateGame() {
   
     players.forEach(element =>{
       playerKills.push(element.kills);
+      element.x = returnPlayerLocationX(element.decX);
+      element.y = returnPlayerLocationY(element.decY);
     });
 
     io.sockets.emit('killData', playerKills);
@@ -160,8 +162,15 @@ function updateGame() {
 
     playerKills = [];
     updateBullets();
+    moveEnemies();
   
   }
+}
+function returnPlayerLocationX(decimal){
+  return (1000 * decimal);
+}
+function returnPlayerLocationY(decimal){
+  return (1500 * decimal);
 }
 
 function updateIndexes(removedIndex){
@@ -234,10 +243,110 @@ function removeEnemy(index, roomId){
 function spawnEnemies(roundInfo){
   if(((roundInfo.lastEnemySpawn + roundInfo.timeBetweenEnemies) < Date.now()) && (roundInfo.enemyCounter < roundInfo.roundEnemyAmount)){
       roundInfo.enemyRandomSpawnVariable = Math.random();
-      enemies.push(new Enemy(roundInfo.spawnsActive[Math.trunc((roundInfo.spawnsActive.length) * Math.random())], enemies.length, 10, 25, .5, roundInfo.roomId, roundInfo.enemyRandomSpawnVariable));
+      enemies.push(new Enemy(roundInfo.spawnsActive[Math.trunc((roundInfo.spawnsActive.length) * Math.random())], enemies.length, .25, 25, .5, roundInfo.roomId, roundInfo.enemyRandomSpawnVariable));
       roundInfo.lastEnemySpawn = Date.now();
       roundInfo.enemyCounter++;
   }
+}
+
+function moveEnemies(){
+  enemies.forEach(enemy => {
+    var closestPlayer = determineClosestPlayer(enemy.x, enemy.y, enemy.roomId);
+
+    determineEnemyTraj(enemy, closestPlayer);
+
+    if(enemy.x < closestPlayer.x && enemy.xClearPos){
+        enemy.x+=enemy.Xspeed;  
+    }
+    if(enemy.x > closestPlayer.x && enemy.xClearNeg){
+      enemy.x+=enemy.Xspeed;  
+    }
+    if(enemy.y < closestPlayer.y && enemy.yClearPos){
+      enemy.y+=enemy.Yspeed;  
+    }
+    if(enemy.y > closestPlayer.y && enemy.yClearNeg){
+      enemy.y+=enemy.Yspeed;  
+    }
+      
+  })
+}
+
+function determineEnemyTraj(enemy, player){
+  //quad 1
+  if(player.x >= enemy.x && player.y < enemy.y){
+    enemy.angle = -1 *Math.atan((enemy.y - player.y)/(player.x - enemy.x));
+  }
+
+  //quad 2
+  if(player.x > enemy.x && player.y >= enemy.y){
+    enemy.angle = Math.atan((player.y - enemy.y)/(player.x - enemy.x));
+  }
+
+  //quad 3
+  if(player.x <= enemy.x && player.y > enemy.y){
+    enemy.angle = 3.14159 + Math.atan((enemy.y - player.y)/(Math.abs(enemy.x - player.x )));
+  }
+
+  //quad 4
+  if(player.x < enemy.x && player.y <= enemy.y){
+    enemy.angle = 3.14159 + Math.atan((enemy.y - player.y )/(Math.abs(enemy.x - player.x)));
+  }
+
+  if(enemyRectangleContains(enemy.x + 27, enemy.y)){
+    enemy.xClearPos = false;
+  }else{
+    enemy.xClearPos = true;
+  }
+  if(enemyRectangleContains(enemy.x - 27, enemy.y)){
+    enemy.xClearNeg = false;
+  }else{
+    enemy.xClearNeg = true;
+  }
+  if(enemyRectangleContains(enemy.x, enemy.y + 27)){
+    enemy.yClearPos = false;
+  }else{
+    enemy.yClearPos = true;
+  }
+  if(enemyRectangleContains(enemy.x, enemy.y - 27)){
+    enemy.yClearNeg = false;
+  }else{
+    enemy.yClearNeg = true;
+  }
+  enemy.Xspeed = enemy.speed * Math.cos(enemy.angle);
+  enemy.Yspeed = enemy.speed * Math.sin(enemy.angle);
+
+}
+function enemyRectangleContains(xPos, yPos){
+  for(var i = 4; i < mapData.rectCoords.length; i++){
+      if((xPos > (mapData.rectCoords[i][0])) && (xPos < (mapData.rectCoords[i][0]) + mapData.rectCoords[i][2]) && (yPos > (mapData.rectCoords[i][1])) && (yPos < (mapData.rectCoords[i][1]) + mapData.rectCoords[i][3])){
+          return true;
+      }
+  }
+
+  for(var i = 4; i < mapData.doorCoords.length; i++){
+      if((xPos > (mapData.doorCoords[i][0]) ) && (xPos < (mapData.doorCoords[i][0]) + mapData.doorCoords[i][2]) && (yPos > (mapData.doorCoords[i][1])) && (yPos < (mapData.doorCoords[i][1]) + mapData.doorCoords[i][3])){
+          return true;
+      }
+  }
+
+  return false;
+  
+}
+
+function determineClosestPlayer(enemyX, enemyY, roomId){
+  var playersInRoom = players.filter(p => p.roomId == roomId);
+
+  var minDistance = 100000000;
+  var closestPlayer;
+
+  playersInRoom.forEach(player => {
+    tempDistance = Math.sqrt(Math.pow(player.x - enemyX, 2) + Math.pow(player.y - enemyY, 2));
+    if(tempDistance < minDistance){
+      minDistance = tempDistance;
+      closestPlayer = player;
+    } 
+  })
+  return closestPlayer;
 }
 
 function updateBullets(){

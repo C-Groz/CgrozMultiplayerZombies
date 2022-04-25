@@ -62,42 +62,26 @@ class ClientGameMap {
         }
     
         move(){
-    
             if (keyIsDown(65)) {
                 if(!this.anyRectangleContains(clientPlayer.leftX, clientPlayer.y)){
                     this.x += this.playerSpeed;
-                    //for(var i = 0; i < enemies.length; i++){
-                    //enemies[i].x += this.playerSpeed;
-                    //}
                 }
                 
             }
-          
             if (keyIsDown(68)) {   
                     if(!this.anyRectangleContains(clientPlayer.rightX, clientPlayer.y)){
                     this.x -= this.playerSpeed;
-                    //for(var i = 0; i < enemies.length; i++){
-                    //enemies[i].x -= this.playerSpeed;
-                    //}
                 }
                 
             }
-          
             if (keyIsDown(87)){
                     if(!this.anyRectangleContains(clientPlayer.x, clientPlayer.topY)){
                     this.y += this.playerSpeed;
-                    //for(var i = 0; i < enemies.length; i++){
-                    //enemies[i].y += this.playerSpeed;
-                    //}
                 }
             }
-          
             if (keyIsDown(83)) {
                     if(!this.anyRectangleContains(clientPlayer.x, clientPlayer.bottomY)){
                     this.y -= this.playerSpeed;
-                    //for(var i = 0; i < enemies.length; i++){
-                    //enemies[i].y -= this.playerSpeed;
-                    //}
                 }
                 
             }
@@ -106,8 +90,6 @@ class ClientGameMap {
                 decX: this.decimalPlayerLocationX(),
                 decY: this.decimalPlayerLocationY()
             };
-            
-    
         }
         
         decimalPlayerLocationX(){

@@ -12,6 +12,14 @@ class Player {
     this.gun = gun; //index of gun type in guns array in sketch
     this.kills = 0;
     this.index = index;
+    this.x = this.returnPlayerLocationX(this.decX);
+    this.y = this.returnPlayerLocationY(this.decY);
+  }
+  returnPlayerLocationX(decimal){
+    return (1000 * decimal);
+  }
+  returnPlayerLocationY(decimal){
+    return (1500 * decimal);
   }
 }
 
