@@ -1,5 +1,5 @@
 
-const socket = io.connect('http://localhost:3000');
+const socket = io.connect('https://safe-sands-40981.herokuapp.com/');
 let gameActive = false;
 let nameInput;
 let submitNameButton;
