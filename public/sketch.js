@@ -1,5 +1,5 @@
 
-const socket = io.connect('https://safe-sands-40981.herokuapp.com/');
+const socket = io.connect('https://safe-sands-40981.herokuapp.com/', { transports : ['websocket'] });
 //const socket = io.connect('localhost:3000');
 
 let gameActive = false;
