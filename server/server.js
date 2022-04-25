@@ -14,7 +14,7 @@ const RoundInfo = require("./RoundInfo");
 
 const ROOM_MAX_CAPACITY = 4;
 
-const server = app.listen(3000);
+const server = app.listen(process.env.PORT || 3000);
 console.log('The server is now running at http://localhost:3000');
 app.use(express.static("public"));
 const io = socket(server);
