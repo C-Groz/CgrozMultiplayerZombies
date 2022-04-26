@@ -9,9 +9,6 @@ const Bullet = require("./Bullet");
 const Enemy = require("./Enemy");
 const RoundInfo = require("./RoundInfo");
 
-
-//aaa
-
 const ROOM_MAX_CAPACITY = 4;
 
 const server = app.listen(process.env.PORT || 3000);
@@ -185,11 +182,15 @@ function updateIndexes(removedIndex){
 function getRoom() {
   let leastPopulatedCount = Infinity;
   let leastPopulatedRoom = rooms[0];
+
   for (const room of rooms) {
-    const count = players.filter(p => p.roomId == room).length;
-    if (count < leastPopulatedCount) {
-      leastPopulatedCount = count;
-      leastPopulatedRoom = room;
+    let roomRoundInfo = roundInfos.filter(r => r.roomId === room);
+    if(roomRoundInfo[0] == null || roomRoundInfo[0].gameActive == false){
+      const count = players.filter(p => p.roomId == room).length;
+      if (count < leastPopulatedCount) {
+        leastPopulatedCount = count;
+        leastPopulatedRoom = room;
+      }
     }
   }
 
@@ -252,22 +253,21 @@ function spawnEnemies(roundInfo){
 function moveEnemies(){
   enemies.forEach(enemy => {
     var closestPlayer = determineClosestPlayer(enemy.x, enemy.y, enemy.roomId);
-
-    determineEnemyTraj(enemy, closestPlayer);
-
-    if(enemy.x < closestPlayer.x && enemy.xClearPos){
+    if(closestPlayer != null){
+      determineEnemyTraj(enemy, closestPlayer);
+      if(enemy.x < closestPlayer.x && enemy.xClearPos){
+          enemy.x+=enemy.Xspeed;  
+      }
+      if(enemy.x > closestPlayer.x && enemy.xClearNeg){
         enemy.x+=enemy.Xspeed;  
+      }
+      if(enemy.y < closestPlayer.y && enemy.yClearPos){
+        enemy.y+=enemy.Yspeed;  
+      }
+      if(enemy.y > closestPlayer.y && enemy.yClearNeg){
+        enemy.y+=enemy.Yspeed;  
+      }
     }
-    if(enemy.x > closestPlayer.x && enemy.xClearNeg){
-      enemy.x+=enemy.Xspeed;  
-    }
-    if(enemy.y < closestPlayer.y && enemy.yClearPos){
-      enemy.y+=enemy.Yspeed;  
-    }
-    if(enemy.y > closestPlayer.y && enemy.yClearNeg){
-      enemy.y+=enemy.Yspeed;  
-    }
-      
   })
 }
 
