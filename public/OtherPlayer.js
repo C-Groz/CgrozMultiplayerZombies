@@ -14,6 +14,7 @@ class OtherPlayer {
     this.index = player.index;
     this.x = player.x;
     this.y = player.y;
+    this.health = player.health;
   }
 
 

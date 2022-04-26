@@ -100,8 +100,8 @@ io.sockets.on('connection',
     function(room){
       doors.push(new Door(1, room, 1000, 600, 200, 30, 200, 50, 25, [1, 5]))
       doors.push(new Door(2, room, 1000, 700, 700, 30, 200, 50, 25, [3, 4]))
-      enemies.push(new Enemy(0, enemies.length, .5, 25, .25, room, 0));
-      enemies.push(new Enemy(2, enemies.length, .5, 25, .25, room, 0));
+      enemies.push(new Enemy(0, enemies.length, .25, 25, .25, room, 0));
+      enemies.push(new Enemy(2, enemies.length, .25, 25, .25, room, 0));
       roundInfos.push(new RoundInfo(room, roundInfos.length));
       let doorsInRoomStart = doors.filter(d => d.roomId == room);
       io.to(room).emit("startGame", doorsInRoomStart);
@@ -160,7 +160,7 @@ function updateGame() {
     playerKills = [];
     updateBullets();
     moveEnemies();
-  
+    playerEnemyContact(playersInRoom, enemiesInRoom)
   }
 }
 function returnPlayerLocationX(decimal){
@@ -347,6 +347,18 @@ function determineClosestPlayer(enemyX, enemyY, roomId){
     } 
   })
   return closestPlayer;
+}
+
+function playerEnemyContact(players, enemies){
+  enemies.forEach(enemy => {
+    players.forEach(player =>{
+      var distance = 0;
+      distance = Math.sqrt(Math.pow(enemy.x - player.x, 2) + Math.pow(enemy.y - player.y, 2));
+      if(distance <= 50){
+        player.health -= enemy.damage;
+      }
+    });
+  });
 }
 
 function updateBullets(){

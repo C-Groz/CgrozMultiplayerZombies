@@ -1,5 +1,5 @@
 class Player {
-  constructor(id, roomId, num, winL, winW, decX, decY, angle, index, gun) {
+  constructor(id, roomId, num, winL, winW, decX, decY, angle, index, gun, roomIndex) {
     this.id = id;
     this.roomId = roomId;
     this.name = "New Player";
@@ -14,6 +14,8 @@ class Player {
     this.index = index;
     this.x = this.returnPlayerLocationX(this.decX);
     this.y = this.returnPlayerLocationY(this.decY);
+    this.health = 100;
+    this.roomIndex = roomIndex;
   }
   returnPlayerLocationX(decimal){
     return (1000 * decimal);
