@@ -4,7 +4,7 @@ class Famas extends AutoRifle{
         this.gLength = 40;
         this.gWidth = 4;
         this.damage = 35;
-        this.bulletVelocity = 22;
+        this.bulletVelocity = 17;
         this.timeBetweenBullets = 80;
         this.bulletDisplacement = 75;
         this.name = "Famas";

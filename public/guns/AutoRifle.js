@@ -24,7 +24,7 @@ class AutoRifle {
 
         //gun stats
         this.damage = 40;
-        this.bulletVelocity = 20;
+        this.bulletVelocity = 15;
         this.timeBetweenBullets = 130;
         this.name = "AR";
         this.textSize = 45;

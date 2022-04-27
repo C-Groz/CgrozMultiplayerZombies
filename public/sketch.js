@@ -76,10 +76,11 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
 
   clientPlayer = new ClientPlayer();
+  mbox = new MysteryBox(300, 950);
   clientMap = new ClientGameMap(windowWidth/2 - 300, windowHeight - 750);
   currentGun = new M1911(clientPlayer.x, clientPlayer.y);
   score = new Score();
-  mbox = new MysteryBox(300, 950);
+  
 
 
   guns = [

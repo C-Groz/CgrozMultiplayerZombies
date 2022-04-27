@@ -22,7 +22,7 @@ class Sniper {
 
         //gun stats
         this.damage = 150;
-        this.bulletVelocity = 40;
+        this.bulletVelocity = 22;
         this.name = "Sniper";
         this.textSize = 22;
         this.yDisplacement = 33;

@@ -1,7 +1,7 @@
 class Score{
     constructor(){
         this.round;
-        this.money = 1000;
+        this.money = 5000;
         this.enemiesRemaining;
         this.playerHealth = 100;
         this.ammoOut = currentGun.startingOut;

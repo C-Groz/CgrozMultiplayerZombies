@@ -18,6 +18,7 @@ class ClientGameMap {
                 [600, 600, 120, 30],//room under spawn connector wall
                 [700, 600, 30, 100],//room under spawn top door wall
                 [700, 900, 30, 100],//room under spawn bottom door wall
+                [mbox.x, mbox.y, 150, 50],
             ]
     
             this.doors = [

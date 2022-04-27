@@ -4,7 +4,7 @@ class M4 extends AutoRifle {
         this.gLength = 40;
         this.gWidth = 4;
         this.damage = 45;
-        this.bulletVelocity = 22;
+        this.bulletVelocity = 16;
         this.timeBetweenBullets = 115;
         this.bulletDisplacement = 75;
         this.name = "M4";

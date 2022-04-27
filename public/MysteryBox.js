@@ -27,7 +27,7 @@ class MysteryBox{
 
         this.guns = [
             //new Pistol(0,0),
-            new M1911(0,0), //0
+            //new M1911(0,0), //0
             new Magnum(0,0), //1
             new Deagle(0,0), //2
             new AK(0,0), //3 
@@ -113,7 +113,7 @@ class MysteryBox{
 
         score.ammoIn = currentGun.startingIn;
         score.ammoOut = currentGun.startingOut;
-
+        clientPlayer.gunIndex = currentGun.gunIndex;
         this.closeBox();
     
     }

@@ -14,7 +14,7 @@ class Deagle extends Pistol{
         this.startingOut = 49;
         this.reloadTime = 800;
         this.damage = 50;
-        this.bulletVelocity = 20;
+        this.bulletVelocity = 17;
         this.name = "Deagle";
         this.textSize = 40;
         this.yDisplacement = 37.5;

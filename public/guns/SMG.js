@@ -24,7 +24,7 @@ class SMG {
 
         //gun stats
         this.damage = 30;
-        this.bulletVelocity = 30;
+        this.bulletVelocity = 20;
         this.timeBetweenBullets = 90;
         this.name = "SMG";
         this.textSize = 45;

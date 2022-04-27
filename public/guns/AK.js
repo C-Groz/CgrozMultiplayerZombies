@@ -3,7 +3,7 @@ class AK extends AutoRifle {
         super();
         this.gLength = 50;
         this.damage = 55;
-        this.bulletVelocity = 22;
+        this.bulletVelocity = 15;
         this.timeBetweenBullets = 130;
         this.bulletDisplacement = 80;
         this.name = "AK-47";
