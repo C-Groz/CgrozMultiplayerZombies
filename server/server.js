@@ -223,20 +223,14 @@ function enemyContainsBullet(enemyX, enemyY, bulletX, bulletY){
 }
 
 function removeEnemy(index, roomId){
-  var enemiesTemp = [];
   enemies.splice(index, 1);
   if(enemies.length > 0){
-      for(var i = 0; i < index; i++){
-          enemiesTemp.push(enemies[i]);
-      }
       for(var i = index; i < enemies.length; i++){
           if(enemies[i] != null){   
               enemies[i].index--;
-              enemiesTemp.push(enemies[i]);
           }
       }
   }
-  enemies = enemiesTemp;
   let roundInfo = roundInfos.filter(r => r.roomId == roomId);
   roundInfos[roundInfo[0].index].enemiesRemaining--;
 }
@@ -244,7 +238,7 @@ function removeEnemy(index, roomId){
 function spawnEnemies(roundInfo){
   if(((roundInfo.lastEnemySpawn + roundInfo.timeBetweenEnemies) < Date.now()) && (roundInfo.enemyCounter < roundInfo.roundEnemyAmount)){
       roundInfo.enemyRandomSpawnVariable = Math.random();
-      enemies.push(new Enemy(roundInfo.spawnsActive[Math.trunc((roundInfo.spawnsActive.length) * Math.random())], enemies.length, .25, 25, .5, roundInfo.roomId, roundInfo.enemyRandomSpawnVariable));
+      enemies.push(new Enemy(roundInfo.spawnsActive[Math.trunc((roundInfo.spawnsActive.length) * Math.random())], enemies.length, roundInfo.enemySpeed, 25, .5, roundInfo.roomId, roundInfo.enemyRandomSpawnVariable));
       roundInfo.lastEnemySpawn = Date.now();
       roundInfo.enemyCounter++;
   }
@@ -394,8 +388,9 @@ function updateBullets(){
               }
 
               if(enemy.health <= 0){
-                  players[bullets[i].playerFired].kills++;
-                  removeEnemy(enemy.index, enemy.roomId);
+                players[bullets[i].playerFired].kills++;
+                removeEnemy(enemy.index, enemy.roomId);
+                bullets[i].bulletInEnemy = -1;
               }
           }
 

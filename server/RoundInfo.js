@@ -11,6 +11,7 @@ class RoundInfo{
         this.enemyRandomSpawnVariable;
         this.spawnsActive = [0,2];
         this.gameActive = true;
+        this.enemySpeed = .20 + (.1 * this.round);
     }
 }
 

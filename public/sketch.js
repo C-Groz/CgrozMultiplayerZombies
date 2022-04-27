@@ -1,6 +1,6 @@
 
-const socket = io.connect('https://safe-sands-40981.herokuapp.com/', { transports : ['websocket'] });
-//const socket = io.connect('localhost:3000');
+//const socket = io.connect('https://safe-sands-40981.herokuapp.com/', { transports : ['websocket'] });
+const socket = io.connect('localhost:3000');
 
 let gameActive = false;
 let nameInput;
@@ -79,6 +79,7 @@ function setup() {
   clientMap = new ClientGameMap(windowWidth/2 - 300, windowHeight - 750);
   currentGun = new M1911(clientPlayer.x, clientPlayer.y);
   score = new Score();
+  mbox = new MysteryBox(300, 950);
 
 
   guns = [
@@ -180,7 +181,10 @@ function draw() {
     clientMap.drawMap();
     wallGuns.forEach(wallGun => {
       wallGun.drawPickup();
-    })
+    });
+    mbox.drawMysteryBox();
+
+    
 
     score.playerHealth = players[clientPlayer.index].health;
 
@@ -200,7 +204,26 @@ function draw() {
       
     });
     score.drawScoreLayout();
+  }
 
+  if(mbox.playerInProximity()){
+    if(!mbox.open){
+      mbox.offerInteraction();
+      mbox.pickedUpBool = false;
+    }
+
+    if(keyIsDown(70) && !mbox.pickedUpBool && !mbox.spinning && mbox.open){
+      mbox.userPickedUp();
+      mbox.pickedUpBool = true;
+      mbox.fPressed = true;
+    }
+    if(keyIsDown(70) && !mbox.open && score.money >= mbox.cost && !mbox.fPressed){
+      mbox.startSpin();
+      mbox.fPressed = true;
+    }
+    if(!keyIsDown(70)){
+      mbox.fPressed = false;
+    }
   }
 
   wallGuns.forEach(element => {
