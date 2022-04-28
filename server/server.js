@@ -152,6 +152,13 @@ function updateGame() {
         roundInfos[roundInfo[0].index].enemyCounter = 0;
         roundInfos[roundInfo[0].index].roundEnemyAmount = 2 * roundInfos[roundInfo[0].index].round + 4;
         roundInfos[roundInfo[0].index].enemiesRemaining = roundInfos[roundInfo[0].index].roundEnemyAmount;
+        if(roundInfos[roundInfo[0].index].enemySpeed <= 1){
+          roundInfos[roundInfo[0].index].enemySpeed+= .05;
+        }
+        if(roundInfos[roundInfo[0].index].timeBetweenEnemies >= 200){
+          roundInfos[roundInfo[0].index].timeBetweenEnemies-= 20;
+        }
+
       }
       spawnEnemies(roundInfos[roundInfo[0].index]);
     }
