@@ -12,6 +12,7 @@ class RoundInfo{
         this.spawnsActive = [0,2];
         this.gameActive = true;
         this.enemySpeed = .20 + (.1 * this.round);
+        this.enemyStartingHealth = 25;
     }
 }
 

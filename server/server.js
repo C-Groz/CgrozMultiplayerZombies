@@ -158,6 +158,7 @@ function updateGame() {
         if(roundInfos[roundInfo[0].index].timeBetweenEnemies >= 200){
           roundInfos[roundInfo[0].index].timeBetweenEnemies-= 20;
         }
+        roundInfos[roundInfo[0].index].enemyStartingHealth+= 5;
 
       }
       spawnEnemies(roundInfos[roundInfo[0].index]);
@@ -245,7 +246,7 @@ function removeEnemy(index, roomId){
 function spawnEnemies(roundInfo){
   if(((roundInfo.lastEnemySpawn + roundInfo.timeBetweenEnemies) < Date.now()) && (roundInfo.enemyCounter < roundInfo.roundEnemyAmount)){
       roundInfo.enemyRandomSpawnVariable = Math.random();
-      enemies.push(new Enemy(roundInfo.spawnsActive[Math.trunc((roundInfo.spawnsActive.length) * Math.random())], enemies.length, roundInfo.enemySpeed, 25, .5, roundInfo.roomId, roundInfo.enemyRandomSpawnVariable));
+      enemies.push(new Enemy(roundInfo.spawnsActive[Math.trunc((roundInfo.spawnsActive.length) * Math.random())], enemies.length, roundInfo.enemySpeed, roundInfo.enemyStartingHealth, .5, roundInfo.roomId, roundInfo.enemyRandomSpawnVariable));
       roundInfo.lastEnemySpawn = Date.now();
       roundInfo.enemyCounter++;
   }
