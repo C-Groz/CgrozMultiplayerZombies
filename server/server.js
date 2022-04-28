@@ -131,12 +131,12 @@ function updateGame() {
     const doorsInRoom = doors.filter(d => d.roomId === room);
     const bulletsInRoom = bullets.filter(b => b.roomId === room);
     const enemiesInRoom = enemies.filter(e => e.roomId === room);
-    const roundInfo = roundInfos.filter(r => r.roomId === room);
+    const roundInfoInRoom = roundInfos.filter(r => r.roomId === room);
     io.to(room).emit("heartbeat", playersInRoom);
     io.to(room).emit("doorData", doorsInRoom);
     io.to(room).emit('bulletData', bulletsInRoom);
     io.to(room).emit('enemyData', enemiesInRoom);
-    io.to(room).emit('roundData', roundInfo);
+    io.to(room).emit('roundData', roundInfoInRoom);
   
     players.forEach(element =>{
       playerKills.push(element.kills);
@@ -146,22 +146,22 @@ function updateGame() {
 
     io.sockets.emit('killData', playerKills);
 
-    if(roundInfo[0] != null){
-      if(roundInfo[0].enemiesRemaining <= 0 && enemiesInRoom.length == 0 && roundInfo[0].enemyCounter == roundInfo[0].roundEnemyAmount){
-        roundInfos[roundInfo[0].index].round++;
-        roundInfos[roundInfo[0].index].enemyCounter = 0;
-        roundInfos[roundInfo[0].index].roundEnemyAmount = 2 * roundInfos[roundInfo[0].index].round + 4;
-        roundInfos[roundInfo[0].index].enemiesRemaining = roundInfos[roundInfo[0].index].roundEnemyAmount;
-        if(roundInfos[roundInfo[0].index].enemySpeed <= 1){
-          roundInfos[roundInfo[0].index].enemySpeed+= .05;
+    if(roundInfoInRoom[0] != null){
+      if(roundInfoInRoom[0].enemiesRemaining <= 0 && enemiesInRoom.length == 0 && roundInfoInRoom[0].enemyCounter == roundInfoInRoom[0].roundEnemyAmount){
+        roundInfos[roundInfoInRoom[0].index].round++;
+        roundInfos[roundInfoInRoom[0].index].enemyCounter = 0;
+        roundInfos[roundInfoInRoom[0].index].roundEnemyAmount = 2 * roundInfos[roundInfoInRoom[0].index].round + 4;
+        roundInfos[roundInfoInRoom[0].index].enemiesRemaining = roundInfos[roundInfoInRoom[0].index].roundEnemyAmount;
+        if(roundInfos[roundInfoInRoom[0].index].enemySpeed <= .75){
+          roundInfos[roundInfoInRoom[0].index].enemySpeed+= .05;
         }
-        if(roundInfos[roundInfo[0].index].timeBetweenEnemies >= 200){
-          roundInfos[roundInfo[0].index].timeBetweenEnemies-= 20;
+        if(roundInfos[roundInfoInRoom[0].index].timeBetweenEnemies >= 200){
+          roundInfos[roundInfoInRoom[0].index].timeBetweenEnemies-= 20;
         }
-        roundInfos[roundInfo[0].index].enemyStartingHealth+= 5;
+        roundInfos[roundInfoInRoom[0].index].enemyStartingHealth+= 5;
 
       }
-      spawnEnemies(roundInfos[roundInfo[0].index]);
+      spawnEnemies(roundInfos[roundInfoInRoom[0].index]);
     }
 
 
