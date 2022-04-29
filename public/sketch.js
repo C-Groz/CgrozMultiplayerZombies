@@ -1,11 +1,8 @@
-var socket = io.connect('');
-function joinServer(){
-  socket = io.connect('https://safe-sands-40981.herokuapp.com/', { transports : ['websocket'] });
-  //socket = io.connect('localhost:3000');
-  joinedGame = true;
-}
 
-let joinedGame = false;
+
+const socket = io.connect('https://safe-sands-40981.herokuapp.com/', { transports : ['websocket'] });
+//const socket = io.connect('localhost:3000');
+
 let gameActive = false;
 let nameInput;
 let submitNameButton;
@@ -130,20 +127,13 @@ function setup() {
   nameInput = createInput('Enter Name');
   submitNameButton = createButton('Submit');
   startGameButton = createButton('Start Game');
-  joinServerButton = createButton('Join Server');
 
-  joinServerButton.position(windowWidth/2 - 150, windowHeight/2, 0);
-  joinServerButton.mousePressed(joinServer);
-  joinServerButton.size(300, 50);
   nameInput.position(windowWidth/2 - 100, windowHeight/2 + 15, 0);
   submitNameButton.position(windowWidth/2 + 50, windowHeight/2 + 15, 0);
   submitNameButton.mousePressed(changeName);
   startGameButton.position(windowWidth/2 - 150, windowHeight/2 + 50, 0);
   startGameButton.mousePressed(startGame);
   startGameButton.size(300, 50);
-
-  
-
 
   this.data = {
     winW: windowWidth,
@@ -158,29 +148,9 @@ function setup() {
 
 function draw() {
   background(220);
-  if(!joinedGame){
-
-    nameInput.hide();
-    submitNameButton.hide();
-    startGameButton.hide();
-
-    textAlign(CENTER, CENTER);
-    textSize(50);
-    fill(160, 10, 20);
-    text("Chank's Zombies", windowWidth/2, windowHeight/2 - 300);
-
-
-
-  }
-  if(!gameActive && joinedGame){
+  if(!gameActive){
     //textFont(inconsolata);
     textAlign(CENTER, CENTER);
-
-    joinServerButton.hide();
-    nameInput.show();
-    submitNameButton.show();
-    startGameButton.show();
-
     textSize(50);
     fill(160, 10, 20);
     text("Chank's Zombies", windowWidth/2, windowHeight/2 - 300);
@@ -204,7 +174,7 @@ function draw() {
   
 
 
-  }if(gameActive && joinedGame){
+  }else{
     nameInput.hide();
     submitNameButton.hide();
     startGameButton.hide();
