@@ -300,17 +300,17 @@ function displayDownMessage(name){
 }
 
 function downPlayer(){
-  if(players[clientPlayer.index].health <= 0 && !players[clientPlayer.index].downed){
-    players[clientPlayer.index].downed = true;
+  if(players[clientPlayer.roomIndex].health <= 0 && !players[clientPlayer.roomIndex].downed){
+    players[clientPlayer.roomIndex].downed = true;
     currentGun = new Hands(clientPlayer.x, clientPlayer.y);
-    players[clientPlayer.index].previousWeapon = clientPlayer.gunIndex;
+    players[clientPlayer.roomIndex].previousWeapon = clientPlayer.gunIndex;
     clientPlayer.gunIndex = 9;
     clientMap.playerSpeed = 0;
     let downedPlayerData = {
       index: clientPlayer.index,
       roomId: clientPlayer.roomId,
-      name: players[clientPlayer.index].name,
-      previousWeapon: players[clientPlayer.index].previousWeapon,
+      name: players[clientPlayer.roomIndex].name,
+      previousWeapon: players[clientPlayer.roomIndex].previousWeapon,
     }
     socket.emit('playerDown', downedPlayerData);
 
