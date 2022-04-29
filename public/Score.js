@@ -35,7 +35,10 @@ class Score{
         fill(185, 185, 185)
         rect(rectX, rectY, rectXlen, rectYlen, 50)
         fill(200 - this.playerHealth*2, 0, 0);
-        rect(rectX + 25, rectY + 5, this.playerHealth * 2.5, 40);
+        if(this.playerHealth > 0){
+            rect(rectX + 25, rectY + 5, this.playerHealth * 2.5, 40);
+        }
+        
 
         //top right menu(gun, total ammo, ammo in mag)
         rectX =  windowWidth - 210;

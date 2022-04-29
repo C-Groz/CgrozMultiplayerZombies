@@ -23,7 +23,7 @@ class Shotgun {
         //gun stats
         
         this.damage = 40; // per bullet(5)
-        this.bulletVelocity = 12;
+        this.bulletVelocity = 8;
         this.name = "Shotgun";
         this.textSize = 22;
         this.yDisplacement = 33;
@@ -38,7 +38,7 @@ class Shotgun {
         this.damageDecreaseConstant = 15;
         this.lastShot = 0;
         this.bulletCooldown = 100;
-        this.rangeBulletDecay = .125;
+        this.rangeBulletDecay = .5;
     }
 
     drawGun(xPos, yPos, angle) {
@@ -79,7 +79,7 @@ class Shotgun {
         if(mouseIsPressed && this.canShoot && score.ammoIn > 0 && !score.reloading && this.lastShot + this.bulletCooldown < millis()){
             
             for(var i = -4; i < 5; i+=2){
-                sendBulletDataShotgun(i);
+                sendBulletDataShotgun(i/3);
             }
 
             score.ammoIn--;

@@ -1,6 +1,7 @@
 
-const socket = io.connect('https://safe-sands-40981.herokuapp.com/', { transports : ['websocket'] });
-//const socket = io.connect('localhost:3000');
+
+//const socket = io.connect('https://safe-sands-40981.herokuapp.com/', { transports : ['websocket'] });
+const socket = io.connect('localhost:3000');
 
 let gameActive = false;
 let nameInput;
@@ -52,6 +53,17 @@ socket.on("roundData", function(roundInfo){
   }
 });
 
+socket.on('downedPlayerMessage', function(downedPlayerData){
+  displayDownMessage(downedPlayerData.name);
+})
+socket.on('playerRevived', function(downedPlayer){
+  if(downedPlayer.index == clientPlayer.index){
+    clientMap.playerSpeed = 5;
+    currentGun = guns[downedPlayer.previousWeapon];
+    clientPlayer.gunIndex = downedPlayer.previousWeapon;
+  }
+})
+
 socket.once('setPlayerNum', function(playerInfo){
   clientPlayer.number = playerInfo.playerNum;
   clientPlayer.roomId = playerInfo.roomId;
@@ -94,7 +106,7 @@ function setup() {
     new MP5(0,0), //6
     new Olympia(0,0), //7
     new Barrett(0,0), //8
-  
+    new Hands(0,0)//9
   ]
 
   wallGuns = [
@@ -103,6 +115,13 @@ function setup() {
 
   killData = [];
   enemiesData = [];
+  downMessageTime = 1500;
+  downMessageStart = 0;
+  currentDownedPlayerName = "";
+  reviveTime = 1000;
+  reviveTimeStart = 0;
+  reviveInProgress = false;
+  reviveStartBoolean = false;
 
 
   nameInput = createInput('Enter Name');
@@ -169,6 +188,10 @@ function draw() {
       player.draw();
     });
 
+    if(players[clientPlayer.index].health <= 0 && gameActive){
+      downPlayer();
+    }
+
     //reload
     if((keyIsDown(82) && !score.reloading) || score.ammoIn == 0 && !score.reloading){
       currentGun.startReload();
@@ -207,6 +230,8 @@ function draw() {
     score.drawScoreLayout();
   }
 
+  
+
   if(mbox.playerInProximity()){
     if(!mbox.open){
       mbox.offerInteraction();
@@ -239,6 +264,15 @@ function draw() {
       }
     }
 });
+
+inProximityOfDownedPlayer()
+  
+
+if(downMessageStart + downMessageTime > millis() && gameActive){
+  fill(255,255,255)
+  textSize(40);
+  text(currentDownedPlayerName + " is downed", windowWidth/2, windowHeight/2 + 200);
+}
   
 }
 
@@ -258,6 +292,29 @@ function changeName(){
 
   socket.emit("nameChange", nameData);
 
+}
+
+function displayDownMessage(name){
+  currentDownedPlayerName = name;
+  downMessageStart = millis();
+}
+
+function downPlayer(){
+  if(players[clientPlayer.index].health <= 0 && !players[clientPlayer.index].downed){
+    players[clientPlayer.index].downed = true;
+    currentGun = new Hands(clientPlayer.x, clientPlayer.y);
+    players[clientPlayer.index].previousWeapon = clientPlayer.gunIndex;
+    clientPlayer.gunIndex = 9;
+    clientMap.playerSpeed = 0;
+    let downedPlayerData = {
+      index: clientPlayer.index,
+      roomId: clientPlayer.roomId,
+      name: players[clientPlayer.index].name,
+      previousWeapon: players[clientPlayer.index].previousWeapon,
+    }
+    socket.emit('playerDown', downedPlayerData);
+
+  }
 }
 
 function updatePlayers(serverPlayers) {
@@ -295,6 +352,43 @@ function sendDrawData(){
   }
 }
 
+function inProximityOfDownedPlayer(){
+  downedPlayers = players.filter(player => player.downed == true && player.index != clientPlayer.index);
+  if(downedPlayers.length > 0){
+    downedPlayers.forEach(downedPlayer => {
+      let distance = sqrt(pow(downedPlayer.x - players[clientPlayer.index].x, 2) + pow(downedPlayer.y - players[clientPlayer.index].y, 2));
+      if(distance < 75){
+        offerRevive(downedPlayer);
+      }
+    });
+  }
+}
+
+function offerRevive(downedPlayer){
+  textSize(30);
+  fill(255, 255, 255);
+  text("Hold F to Revive " + downedPlayer.name, windowWidth/2, windowHeight/2 + 200);
+
+  if(keyIsDown(70) && !reviveStartBoolean){
+    reviveStartBoolean = true;
+    reviveInProgress = true;
+    reviveTimeStart = millis();
+  }
+  if(keyIsDown(70) && reviveInProgress){
+    
+  }else{
+    reviveInProgress = false;
+    reviveStartBoolean = false;
+  }
+  if(reviveTimeStart + reviveTime < millis() && reviveStartBoolean && reviveInProgress){
+    revive(downedPlayer);
+  }
+}
+
+function revive(downedPlayer){
+  socket.emit('playerRevive', downedPlayer);
+}
+
 function drawBullets(){
   fill(0, 0, 0)
   bullets.forEach(element => {
@@ -312,6 +406,9 @@ function sendBulletData(){
       sprayDeviation: 0,
       playerFired: clientPlayer.index,
       roomId: clientPlayer.roomId,
+      decreaseConstant: currentGun.damageDecreaseConstant,
+      bulletDecay: 0,
+
   }
   socket.emit('bulletFired', bulletData);
 }
@@ -326,7 +423,8 @@ function sendBulletDataShotgun(sprayDeviation){
       sprayDeviation: sprayDeviation,
       playerFired: clientPlayer.index,
       roomId: clientPlayer.roomId,
-
+      decreaseConstant: currentGun.damageDecreaseConstant,
+      bulletDecay: currentGun.rangeBulletDecay,
   }
   socket.emit('bulletFired', bulletData);
 }
@@ -344,3 +442,4 @@ function playerExists(playerFromServer) {
 function removePlayer(playerId) {
   players = players.filter(player => player.id !== playerId);
 }
+

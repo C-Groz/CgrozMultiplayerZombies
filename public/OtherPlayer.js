@@ -15,6 +15,8 @@ class OtherPlayer {
     this.x = player.x;
     this.y = player.y;
     this.health = player.health;
+    this.downed = player.downed;
+    this.previousWeapon = player.previousWeapon;
   }
 
 

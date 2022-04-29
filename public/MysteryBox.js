@@ -34,7 +34,7 @@ class MysteryBox{
             new M4(0,0), //4
             new Famas(0,0), //5
             new MP5(0,0), //6
-            new Olympia(0,0), //7
+            //new Olympia(0,0), //7
             new Barrett(0,0), //8
         ]
         

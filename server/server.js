@@ -53,7 +53,7 @@ io.sockets.on('connection',
 
     function(bulletData){
         if(bulletData.startX != null){
-          bullets.push(new Bullet(bulletData.startX, bulletData.startY, bulletData.angle, bulletData.damage, bulletData.velocity, bulletData.sprayDeviation, bulletData.playerFired, bulletData.roomId));
+          bullets.push(new Bullet(bulletData.startX, bulletData.startY, bulletData.angle, bulletData.damage, bulletData.velocity, bulletData.sprayDeviation, bulletData.playerFired, bulletData.roomId, bulletData.decreaseConstant, bulletData.bulletDecay));
         }
     });
 
@@ -78,6 +78,23 @@ io.sockets.on('connection',
         }
       })
     });
+
+    socket.on('playerDown', 
+    function(downedPlayerData){
+      players[downedPlayerData.index].downed = true;
+      players[downedPlayerData.index].previousWeapon = downedPlayerData.previousWeapon;
+      players[downedPlayerData.index].gun = 9;
+      io.to(downedPlayerData.roomId).emit('downedPlayerMessage', downedPlayerData)
+    });
+
+    socket.on('playerRevive', function(downedPlayer){
+      players[downedPlayer.index].gun = downedPlayer.previousWeapon;
+      players[downedPlayer.index].downed = false;
+      players[downedPlayer.index].health = 100;
+      io.to(downedPlayer.roomId).emit('playerRevived', downedPlayer);
+    })
+
+
 
     socket.on('openDoor', function(doorData){
       doors.forEach(door => {
@@ -342,11 +359,13 @@ function determineClosestPlayer(enemyX, enemyY, roomId){
   var closestPlayer;
 
   playersInRoom.forEach(player => {
-    tempDistance = Math.sqrt(Math.pow(player.x - enemyX, 2) + Math.pow(player.y - enemyY, 2));
-    if(tempDistance < minDistance){
-      minDistance = tempDistance;
-      closestPlayer = player;
-    } 
+    if(!player.downed){
+      tempDistance = Math.sqrt(Math.pow(player.x - enemyX, 2) + Math.pow(player.y - enemyY, 2));
+      if(tempDistance < minDistance){
+        minDistance = tempDistance;
+        closestPlayer = player;
+      } 
+    }
   })
   return closestPlayer;
 }
@@ -388,24 +407,28 @@ function updateBullets(){
                   if(enemy.bulletInEnemy != i && bullets[i].bulletInEnemy != enemy.index && enemy.roomId == bullets[i].roomId){
                       enemy.health -= bullets[i].damage;
                       enemy.healthPercent = enemy.health/enemy.initialHealth;
+                      bullets[i].damage -= bullets[i].damageDecreaseConstant;
                   }
                   enemy.bulletInEnemy = i;
                   bullets[i].bulletInEnemy = enemy.index;
               }else if(enemy.bulletInEnemy == i){
                   enemy.bulletInEnemy = -1;
               }
+              if(bullets[i].damage <= 0){
+                bullets.splice(i, 1);
+              }
 
-              if(enemy.health <= 0){
+              if(enemy.health <= 0.01){
                 players[bullets[i].playerFired].kills++;
                 removeEnemy(enemy.index, enemy.roomId);
                 bullets[i].bulletInEnemy = -1;
               }
           }
-
           });
           if(bullets[i] != null){
               bullets[i].x += bullets[i].velocity * Math.cos(bullets[i].angle) + (bullets[i].sprayDeviation * Math.sin(bullets[i].angle));
               bullets[i].y += bullets[i].velocity * Math.sin(bullets[i].angle) - (bullets[i].sprayDeviation * Math.cos(bullets[i].angle));
+              bullets[i].damage -= bullets[i].bulletDecay;
           }
       }
   }
