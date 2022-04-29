@@ -210,7 +210,7 @@ function draw() {
 
     
 
-    score.playerHealth = players[clientPlayer.index].health;
+    score.playerHealth = players[clientPlayer.roomIndex].health;
 
     doors.forEach(door => {
       
