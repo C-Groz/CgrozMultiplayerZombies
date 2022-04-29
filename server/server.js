@@ -30,10 +30,24 @@ setInterval(updateGame, 5); //default 16
 io.sockets.on('connection', 
   function(socket) {
     console.log("New connection " + socket.id);
-    userCounter++;
 
     socket.on('start', 
     function(data){
+      userCounter++;
+
+      var roomId = getRoom();
+      socket.join(roomId);
+
+      var playersInRoom = players.filter(p => p.roomId == roomId);
+
+      let playerInfo = {
+        playerNum: userCounter,
+        roomId: roomId,
+        index: players.length,
+        roomIndex: playersInRoom.length,
+      }
+      socket.emit('setPlayerNum', playerInfo);
+
       players.push(new Player(socket.id, roomId, userCounter, data.winL, data.winW, data.decX, data.decY, 0, players.length, 0));
     });
 
@@ -56,18 +70,7 @@ io.sockets.on('connection',
         }
     });
 
-    var roomId = getRoom();
-    socket.join(roomId);
-
-    var playersInRoom = players.filter(p => p.roomId == roomId);
-
-    let playerInfo = {
-      playerNum: userCounter,
-      roomId: roomId,
-      index: players.length,
-      roomIndex: playersInRoom.length,
-    }
-    socket.emit('setPlayerNum', playerInfo);
+    
 
     socket.on('nameChange', 
     function(nameData){
