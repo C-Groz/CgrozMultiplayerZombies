@@ -188,7 +188,7 @@ function draw() {
       player.draw();
     });
 
-    if(players[clientPlayer.index].health <= 0 && gameActive){
+    if(players[clientPlayer.roomIndex].health <= 0 && gameActive){
       downPlayer();
     }
 
