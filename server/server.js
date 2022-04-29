@@ -29,7 +29,6 @@ setInterval(updateGame, 5); //default 16
 
 io.sockets.on('connection', 
   function(socket) {
-
     console.log("New connection " + socket.id);
     userCounter++;
 
