@@ -174,7 +174,7 @@ function updateGame() {
         roundInfos[roundInfoInRoom[0].index].enemiesRemaining = roundInfos[roundInfoInRoom[0].index].roundEnemyAmount;
         if(roundInfos[roundInfoInRoom[0].index].enemySpeed <= .75){
           roundInfos[roundInfoInRoom[0].index].enemySpeed += .05;
-          console.log(roundInfoInRoom[0].index);
+          console.log(roundInfoInRoom[0].enemySpeed);
         }
         if(roundInfos[roundInfoInRoom[0].index].timeBetweenEnemies >= 200){
           roundInfos[roundInfoInRoom[0].index].timeBetweenEnemies-= 20;
