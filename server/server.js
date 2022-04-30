@@ -16,7 +16,7 @@ console.log('The server is now running at http://localhost:3000');
 app.use(express.static("public"));
 const io = socket(server);
 
-const rooms = [short.generate()];
+let rooms = [short.generate()];
 let players = [];
 let doors = [];
 let roundInfos = [];
