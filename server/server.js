@@ -151,6 +151,11 @@ function updateGame() {
     const bulletsInRoom = bullets.filter(b => b.roomId === room);
     const enemiesInRoom = enemies.filter(e => e.roomId === room);
     const roundInfoInRoom = roundInfos.filter(r => r.roomId === room);
+    io.to(room).emit("heartbeat", playersInRoom);
+    io.to(room).emit("doorData", doorsInRoom);
+    io.to(room).emit('bulletData', bulletsInRoom);
+    io.to(room).emit('enemyData', enemiesInRoom);
+    io.to(room).emit('roundData', roundInfoInRoom);
     
   
     players.forEach(element =>{
@@ -186,11 +191,7 @@ function updateGame() {
     moveEnemies();
     playerEnemyContact(playersInRoom, enemiesInRoom);
 
-    io.to(room).emit("heartbeat", playersInRoom);
-    io.to(room).emit("doorData", doorsInRoom);
-    io.to(room).emit('bulletData', bulletsInRoom);
-    io.to(room).emit('enemyData', enemiesInRoom);
-    io.to(room).emit('roundData', roundInfoInRoom);
+    
   }
 }
 function returnPlayerLocationX(decimal){
