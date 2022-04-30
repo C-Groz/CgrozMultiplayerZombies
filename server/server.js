@@ -25,7 +25,7 @@ let bullets = [];
 var enemies = []
 var mapData;
 var playerKills = [];
-setInterval(updateGame, 5); //default 16 
+setInterval(updateGame, 10); //default 16 
 
 io.sockets.on('connection', 
   function(socket) {
