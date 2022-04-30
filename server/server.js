@@ -192,6 +192,11 @@ function updateGame() {
     playerEnemyContact(playersInRoom, enemiesInRoom);
 
     
+    if(playersInRoom.length == 0){
+      rooms = rooms.filter(r => r != room);
+      console.log("Removed room " + room);
+    }
+
   }
 }
 function returnPlayerLocationX(decimal){
