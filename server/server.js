@@ -195,9 +195,6 @@ function updateGame() {
       moveEnemies(room);
       playerEnemyContact(playersInRoom, enemiesInRoom);
 
-      
-      
-
       io.to(room).emit('killData', playerKills);
       playerKills = [];
     }
@@ -217,6 +214,7 @@ function sessionInProgress(playersInRoom){
     });
     return false;
   }
+  return true;
 }
 
 function returnPlayerLocationX(decimal){
