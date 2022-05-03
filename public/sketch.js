@@ -4,6 +4,7 @@ const socket = io.connect('https://safe-sands-40981.herokuapp.com/', { transport
 //const socket = io.connect('localhost:3000');
 
 let gameActive = false;
+let sessionOver = false;
 let nameInput;
 let submitNameButton;
 let startGameButton;
@@ -18,6 +19,10 @@ socket.on("heartbeat", function(players) {
   updateMenus(players);
   updatePlayers(players);
   sendDrawData();
+});
+socket.once('sessionOver', function(roomSessionActive){
+  gameActive = roomSessionActive;
+  sessionOver = true;
 });
 socket.on("updateIndex", function(indexRemoved) {
   if(clientPlayer.index > indexRemoved){
@@ -148,7 +153,7 @@ function setup() {
 
 function draw() {
   background(220);
-  if(!gameActive){
+  if(!gameActive && !sessionOver){
     //textFont(inconsolata);
     textAlign(CENTER, CENTER);
     textSize(50);
@@ -171,10 +176,8 @@ function draw() {
         text("empty", windowWidth/2, windowHeight/2 - 175 + 50*i)
       }
     }
-  
 
-
-  }else{
+  }else if(gameActive){
     nameInput.hide();
     submitNameButton.hide();
     startGameButton.hide();
@@ -208,12 +211,9 @@ function draw() {
     });
     mbox.drawMysteryBox();
 
-    
-
     score.playerHealth = players[clientPlayer.roomIndex].health;
 
     doors.forEach(door => {
-      
       door.draw();
       if(door.playerInProximity() && !door.open){
         door.offerInteraction();
@@ -228,52 +228,51 @@ function draw() {
       
     });
     score.drawScoreLayout();
-  }
-
   
+    if(mbox.playerInProximity()){
+      if(!mbox.open){
+        mbox.offerInteraction();
+        mbox.pickedUpBool = false;
+      }
 
-  if(mbox.playerInProximity()){
-    if(!mbox.open){
-      mbox.offerInteraction();
-      mbox.pickedUpBool = false;
-    }
-
-    if(keyIsDown(70) && !mbox.pickedUpBool && !mbox.spinning && mbox.open){
-      mbox.userPickedUp();
-      mbox.pickedUpBool = true;
-      mbox.fPressed = true;
-    }
-    if(keyIsDown(70) && !mbox.open && score.money >= mbox.cost && !mbox.fPressed){
-      mbox.startSpin();
-      mbox.fPressed = true;
-    }
-    if(!keyIsDown(70)){
-      mbox.fPressed = false;
-    }
-  }
-
-  wallGuns.forEach(element => {
-    if(element.playerInProximity()){
-      element.offerPickup();
-      if(keyIsDown(70) && !element.pickedUpBool){
-        element.userPickedUp();
-        element.pickedUpBool = true;
+      if(keyIsDown(70) && !mbox.pickedUpBool && !mbox.spinning && mbox.open){
+        mbox.userPickedUp();
+        mbox.pickedUpBool = true;
+        mbox.fPressed = true;
+      }
+      if(keyIsDown(70) && !mbox.open && score.money >= mbox.cost && !mbox.fPressed){
+        mbox.startSpin();
+        mbox.fPressed = true;
       }
       if(!keyIsDown(70)){
-        element.pickedUpBool = false;
+        mbox.fPressed = false;
       }
     }
-});
 
-inProximityOfDownedPlayer()
+    wallGuns.forEach(element => {
+      if(element.playerInProximity()){
+        element.offerPickup();
+        if(keyIsDown(70) && !element.pickedUpBool){
+          element.userPickedUp();
+          element.pickedUpBool = true;
+        }
+        if(!keyIsDown(70)){
+          element.pickedUpBool = false;
+        }
+      }
+  });
+
+  inProximityOfDownedPlayer()
   
 
-if(downMessageStart + downMessageTime > millis() && gameActive){
-  fill(255,255,255)
-  textSize(40);
-  text(currentDownedPlayerName + " is downed", windowWidth/2, windowHeight/2 + 200);
-}
-  
+  if(downMessageStart + downMessageTime > millis() && gameActive){
+    fill(255,255,255)
+    textSize(40);
+    text(currentDownedPlayerName + " is downed", windowWidth/2, windowHeight/2 + 200);
+  }
+  }else if(sessionOver){
+    text("Game Over", windowWidth/2, windowHeight/2);
+  }
 }
 
 function updateMenus(serverPlayers){
