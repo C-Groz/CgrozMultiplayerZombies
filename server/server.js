@@ -209,13 +209,14 @@ function updateGame() {
 }
 
 function sessionInProgress(playersInRoom){
-  playersInRoom.forEach(player => {
-    if(player.downed == false){
-      return true;
-    }
-  });
-  return false;
-
+  if(playersInRoom.length > 0){
+    playersInRoom.forEach(player => {
+      if(player.downed == false){
+        return true;
+      }
+    });
+    return false;
+  }
 }
 
 function returnPlayerLocationX(decimal){
