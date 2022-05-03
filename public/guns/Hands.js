@@ -32,4 +32,7 @@ class Hands {
     shoot(){
 
     }
+    reload(){
+        
+    }
 }
