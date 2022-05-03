@@ -154,8 +154,8 @@ function updateGame() {
   
     playersInRoom.forEach(element =>{
       playerKills.push(element.kills);
-      //element.x = returnPlayerLocationX(element.decX);
-      //element.y = returnPlayerLocationY(element.decY);
+      element.x = returnPlayerLocationX(element.decX);
+      element.y = returnPlayerLocationY(element.decY);
     });
 
 
@@ -179,9 +179,8 @@ function updateGame() {
     }
 
 
-    playerKills = [];
     updateBullets();
-    moveEnemies();
+    moveEnemies(enemiesInRoom);
     playerEnemyContact(playersInRoom, enemiesInRoom);
 
     
@@ -195,7 +194,9 @@ function updateGame() {
     io.to(room).emit('bulletData', bulletsInRoom);
     io.to(room).emit('enemyData', enemiesInRoom);
     io.to(room).emit('roundData', roundInfoInRoom);
-    io.sockets.emit('killData', playerKills);
+    io.to(room).emit('killData', playerKills);
+    playerKills = [];
+
 
   }
 }
@@ -280,9 +281,9 @@ function spawnEnemies(roundInfo){
   }
 }
 
-function moveEnemies(){
-  enemies.forEach(enemy => {
-    var closestPlayer = determineClosestPlayer(enemy.x, enemy.y, enemy.roomId);
+function moveEnemies(enemiesInRoom, playersInRoom){
+  enemiesInRoom.forEach(enemy => {
+    var closestPlayer = determineClosestPlayer(enemy.x, enemy.y, playersInRoom);
     if(closestPlayer != null){
       determineEnemyTraj(enemy, closestPlayer);
       if(enemy.x < closestPlayer.x && enemy.xClearPos){
@@ -363,8 +364,8 @@ function enemyRectangleContains(xPos, yPos){
   
 }
 
-function determineClosestPlayer(enemyX, enemyY, roomId){
-  var playersInRoom = players.filter(p => p.roomId == roomId);
+function determineClosestPlayer(enemyX, enemyY, playersInRoom){
+  //var playersInRoom = players.filter(p => p.roomId == roomId);
 
   var minDistance = 100000000;
   var closestPlayer;
