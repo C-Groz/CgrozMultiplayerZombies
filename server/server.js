@@ -179,8 +179,8 @@ function updateGame() {
     }
 
 
-    updateBullets();
-    moveEnemies(enemiesInRoom);
+    updateBullets(room);
+    moveEnemies(room);
     playerEnemyContact(playersInRoom, enemiesInRoom);
 
     
@@ -281,25 +281,29 @@ function spawnEnemies(roundInfo){
   }
 }
 
-function moveEnemies(enemiesInRoom, playersInRoom){
-  enemiesInRoom.forEach(enemy => {
-    var closestPlayer = determineClosestPlayer(enemy.x, enemy.y, playersInRoom);
-    if(closestPlayer != null){
-      determineEnemyTraj(enemy, closestPlayer);
-      if(enemy.x < closestPlayer.x && enemy.xClearPos){
+function moveEnemies(roomId){
+  enemies.forEach(enemy => {
+    if(enemy.roomId == roomId){
+      var closestPlayer = determineClosestPlayer(enemy.x, enemy.y, enemy.roomId);
+      if(closestPlayer != null){
+        determineEnemyTraj(enemy, closestPlayer);
+        if(enemy.x < closestPlayer.x && enemy.xClearPos){
+            enemy.x+=enemy.Xspeed;  
+        }
+        if(enemy.x > closestPlayer.x && enemy.xClearNeg){
           enemy.x+=enemy.Xspeed;  
-      }
-      if(enemy.x > closestPlayer.x && enemy.xClearNeg){
-        enemy.x+=enemy.Xspeed;  
-      }
-      if(enemy.y < closestPlayer.y && enemy.yClearPos){
-        enemy.y+=enemy.Yspeed;  
-      }
-      if(enemy.y > closestPlayer.y && enemy.yClearNeg){
-        enemy.y+=enemy.Yspeed;  
+        }
+        if(enemy.y < closestPlayer.y && enemy.yClearPos){
+          enemy.y+=enemy.Yspeed;  
+        }
+        if(enemy.y > closestPlayer.y && enemy.yClearNeg){
+          enemy.y+=enemy.Yspeed;  
+        }
       }
     }
-  })
+  });
+  
+
 }
 
 function determineEnemyTraj(enemy, player){
@@ -364,8 +368,8 @@ function enemyRectangleContains(xPos, yPos){
   
 }
 
-function determineClosestPlayer(enemyX, enemyY, playersInRoom){
-  //var playersInRoom = players.filter(p => p.roomId == roomId);
+function determineClosestPlayer(enemyX, enemyY, roomId){
+  var playersInRoom = players.filter(p => p.roomId == roomId);
 
   var minDistance = 100000000;
   var closestPlayer;
@@ -394,54 +398,56 @@ function playerEnemyContact(players, enemies){
   });
 }
 
-function updateBullets(){
+function updateBullets(roomId){
 
   if(bullets.length != 0){
       for(var i = 0; i < bullets.length; i++){
-          mapData.rectCoords.forEach(element => {
-              if(bullets[i] != null){
-                  if(rectangleContains(bullets[i].x, bullets[i].y, element[0], element[1], element[2], element[3])){
-                      bullets.splice(i, 1);
-                  }
-              }
-          });
-          doors.forEach(door => {
-              if(bullets[i] != null && !door.open && door.roomId == bullets[i].roomId){
-                  if(rectangleContains(bullets[i].x, bullets[i].y, door.x, door.y, door.l, door.w)){
-                      bullets.splice(i, 1);
-                  }
-              }
-          });
-          
-          enemies.forEach(enemy => {
-            if(bullets[i] != null && enemy != null && enemy.roomId == bullets[i].roomId){
-              if(enemyContainsBullet(enemy.x, enemy.y, bullets[i].x, bullets[i].y)){
-                  if(enemy.bulletInEnemy != i && bullets[i].bulletInEnemy != enemy.index && enemy.roomId == bullets[i].roomId){
-                      enemy.health -= bullets[i].damage;
-                      enemy.healthPercent = enemy.health/enemy.initialHealth;
-                      bullets[i].damage -= bullets[i].damageDecreaseConstant;
-                  }
-                  enemy.bulletInEnemy = i;
-                  bullets[i].bulletInEnemy = enemy.index;
-              }else if(enemy.bulletInEnemy == i){
-                  enemy.bulletInEnemy = -1;
-              }
-              if(bullets[i].damage <= 0){
-                bullets.splice(i, 1);
-              }
+        if(bullets[i].roomId == roomId){
+            mapData.rectCoords.forEach(element => {
+                if(bullets[i] != null){
+                    if(rectangleContains(bullets[i].x, bullets[i].y, element[0], element[1], element[2], element[3])){
+                        bullets.splice(i, 1);
+                    }
+                }
+            });
+            doors.forEach(door => {
+                if(bullets[i] != null && !door.open && door.roomId == bullets[i].roomId){
+                    if(rectangleContains(bullets[i].x, bullets[i].y, door.x, door.y, door.l, door.w)){
+                        bullets.splice(i, 1);
+                    }
+                }
+            });
+            
+            enemies.forEach(enemy => {
+              if(bullets[i] != null && enemy != null && enemy.roomId == bullets[i].roomId){
+                if(enemyContainsBullet(enemy.x, enemy.y, bullets[i].x, bullets[i].y)){
+                    if(enemy.bulletInEnemy != i && bullets[i].bulletInEnemy != enemy.index && enemy.roomId == bullets[i].roomId){
+                        enemy.health -= bullets[i].damage;
+                        enemy.healthPercent = enemy.health/enemy.initialHealth;
+                        bullets[i].damage -= bullets[i].damageDecreaseConstant;
+                    }
+                    enemy.bulletInEnemy = i;
+                    bullets[i].bulletInEnemy = enemy.index;
+                }else if(enemy.bulletInEnemy == i){
+                    enemy.bulletInEnemy = -1;
+                }
+                if(bullets[i].damage <= 0){
+                  bullets.splice(i, 1);
+                }
 
-              if(enemy.health <= 0.01){
-                players[bullets[i].playerFired].kills++;
-                removeEnemy(enemy.index, enemy.roomId);
-                bullets[i].bulletInEnemy = -1;
-              }
-          }
-          });
-          if(bullets[i] != null){
-              bullets[i].x += bullets[i].velocity * Math.cos(bullets[i].angle) + (bullets[i].sprayDeviation * Math.sin(bullets[i].angle));
-              bullets[i].y += bullets[i].velocity * Math.sin(bullets[i].angle) - (bullets[i].sprayDeviation * Math.cos(bullets[i].angle));
-              bullets[i].damage -= bullets[i].bulletDecay;
-          }
+                if(enemy.health <= 0.01){
+                  players[bullets[i].playerFired].kills++;
+                  removeEnemy(enemy.index, enemy.roomId);
+                  bullets[i].bulletInEnemy = -1;
+                }
+            }
+            });
+            if(bullets[i] != null){
+                bullets[i].x += bullets[i].velocity * Math.cos(bullets[i].angle) + (bullets[i].sprayDeviation * Math.sin(bullets[i].angle));
+                bullets[i].y += bullets[i].velocity * Math.sin(bullets[i].angle) - (bullets[i].sprayDeviation * Math.cos(bullets[i].angle));
+                bullets[i].damage -= bullets[i].bulletDecay;
+            }
+        }
       }
   }
       
