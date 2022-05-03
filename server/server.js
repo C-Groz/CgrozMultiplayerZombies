@@ -152,13 +152,12 @@ function updateGame() {
     var enemiesInRoom = enemies.filter(e => e.roomId === room);
     var roundInfoInRoom = roundInfos.filter(r => r.roomId === room);
   
-    players.forEach(element =>{
+    playersInRoom.forEach(element =>{
       playerKills.push(element.kills);
-      element.x = returnPlayerLocationX(element.decX);
-      element.y = returnPlayerLocationY(element.decY);
+      //element.x = returnPlayerLocationX(element.decX);
+      //element.y = returnPlayerLocationY(element.decY);
     });
 
-    io.sockets.emit('killData', playerKills);
 
     if(roundInfoInRoom[0] != null){
       if(roundInfoInRoom[0].enemiesRemaining <= 0 && enemiesInRoom.length == 0 && roundInfoInRoom[0].enemyCounter == roundInfoInRoom[0].roundEnemyAmount){
@@ -196,6 +195,7 @@ function updateGame() {
     io.to(room).emit('bulletData', bulletsInRoom);
     io.to(room).emit('enemyData', enemiesInRoom);
     io.to(room).emit('roundData', roundInfoInRoom);
+    io.sockets.emit('killData', playerKills);
 
   }
 }
