@@ -146,17 +146,11 @@ io.sockets.on('connection',
 
 function updateGame() {
   for (const room of rooms) {
-    const playersInRoom = players.filter(p => p.roomId === room);
-    const doorsInRoom = doors.filter(d => d.roomId === room);
-    const bulletsInRoom = bullets.filter(b => b.roomId === room);
-    const enemiesInRoom = enemies.filter(e => e.roomId === room);
-    const roundInfoInRoom = roundInfos.filter(r => r.roomId === room);
-    io.to(room).emit("heartbeat", playersInRoom);
-    io.to(room).emit("doorData", doorsInRoom);
-    io.to(room).emit('bulletData', bulletsInRoom);
-    io.to(room).emit('enemyData', enemiesInRoom);
-    io.to(room).emit('roundData', roundInfoInRoom);
-    
+    var playersInRoom = players.filter(p => p.roomId === room);
+    var doorsInRoom = doors.filter(d => d.roomId === room);
+    var bulletsInRoom = bullets.filter(b => b.roomId === room);
+    var enemiesInRoom = enemies.filter(e => e.roomId === room);
+    var roundInfoInRoom = roundInfos.filter(r => r.roomId === room);
   
     players.forEach(element =>{
       playerKills.push(element.kills);
@@ -196,6 +190,12 @@ function updateGame() {
       rooms = rooms.filter(r => r != room);
       console.log("Removed room " + room);
     }
+
+    io.to(room).emit("heartbeat", playersInRoom);
+    io.to(room).emit("doorData", doorsInRoom);
+    io.to(room).emit('bulletData', bulletsInRoom);
+    io.to(room).emit('enemyData', enemiesInRoom);
+    io.to(room).emit('roundData', roundInfoInRoom);
 
   }
 }
