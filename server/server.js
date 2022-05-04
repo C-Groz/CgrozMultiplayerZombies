@@ -135,7 +135,7 @@ io.sockets.on('connection',
       //io.sockets.emit("disconnect", socket.id);
       tempPlayer = players.filter(player => player.id == socket.id);
       players = players.filter(player => player.id !== socket.id);
-      if(tempPlayer[0].index != null){
+      if(tempPlayer[0] != null){
         updateIndexes(tempPlayer[0].index);
       }
     });
