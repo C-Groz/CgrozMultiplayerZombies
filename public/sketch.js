@@ -64,6 +64,7 @@ socket.on('downedPlayerMessage', function(downedPlayerData){
 socket.on('playerRevived', function(downedPlayer){
   if(downedPlayer.index == clientPlayer.index){
     clientMap.playerSpeed = 5;
+    console.log(downPlayer.previousWeapon);
     currentGun = guns[downedPlayer.previousWeapon];
     clientPlayer.gunIndex = downedPlayer.previousWeapon;
   }
