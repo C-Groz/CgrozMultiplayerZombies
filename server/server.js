@@ -159,12 +159,8 @@ function updateGame() {
     io.to(room).emit('roundData', roundInfoInRoom);
     
     var roomSessionActive = sessionInProgress(playersInRoom);
-    if(!roomSessionActive){
+    if(roomSessionActive){
 
-      io.to(room).emit('sessionOver', roomSessionActive);
-
-    }else{
-    
       players.forEach(element =>{
         playerKills.push(element.kills);
         element.x = returnPlayerLocationX(element.decX);
@@ -197,6 +193,9 @@ function updateGame() {
 
       io.to(room).emit('killData', playerKills);
       playerKills = [];
+    }else {
+      io.to(room).emit('sessionOver', roomSessionActive);
+      console.log(1);
     }
     if(playersInRoom.length == 0){
       rooms = rooms.filter(r => r != room);
