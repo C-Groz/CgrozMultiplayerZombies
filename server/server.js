@@ -70,7 +70,10 @@ io.sockets.on('connection',
         }
     });
 
-    
+    socket.on('allPlayersDowned', function(room){
+      var gameActive = false;
+      io.to(room).emit('sessionOver', gameActive);
+    });
 
     socket.on('nameChange', 
     function(nameData){
@@ -158,64 +161,48 @@ function updateGame() {
     io.to(room).emit('enemyData', enemiesInRoom);
     io.to(room).emit('roundData', roundInfoInRoom);
     
-    var roomSessionActive = sessionInProgress(playersInRoom);
-    if(roomSessionActive){
-
-      players.forEach(element =>{
-        playerKills.push(element.kills);
-        element.x = returnPlayerLocationX(element.decX);
-        element.y = returnPlayerLocationY(element.decY);
-      });
+    players.forEach(element =>{
+      playerKills.push(element.kills);
+      element.x = returnPlayerLocationX(element.decX);
+      element.y = returnPlayerLocationY(element.decY);
+    });
 
 
-      if(roundInfoInRoom[0] != null){
-        if(roundInfoInRoom[0].enemiesRemaining <= 0 && enemiesInRoom.length == 0 && roundInfoInRoom[0].enemyCounter == roundInfoInRoom[0].roundEnemyAmount){
-          roundInfos[roundInfoInRoom[0].index].round++;
-          roundInfos[roundInfoInRoom[0].index].enemyCounter = 0;
-          roundInfos[roundInfoInRoom[0].index].roundEnemyAmount = 2 * roundInfos[roundInfoInRoom[0].index].round + 4;
-          roundInfos[roundInfoInRoom[0].index].enemiesRemaining = roundInfos[roundInfoInRoom[0].index].roundEnemyAmount;
-          if(roundInfos[roundInfoInRoom[0].index].enemySpeed <= .75){
-            roundInfos[roundInfoInRoom[0].index].enemySpeed += .05;
-          }
-          if(roundInfos[roundInfoInRoom[0].index].timeBetweenEnemies >= 200){
-            roundInfos[roundInfoInRoom[0].index].timeBetweenEnemies-= 20;
-          }
-          roundInfos[roundInfoInRoom[0].index].enemyStartingHealth+= 5;
-
+    if(roundInfoInRoom[0] != null){
+      if(roundInfoInRoom[0].enemiesRemaining <= 0 && enemiesInRoom.length == 0 && roundInfoInRoom[0].enemyCounter == roundInfoInRoom[0].roundEnemyAmount){
+        roundInfos[roundInfoInRoom[0].index].round++;
+        roundInfos[roundInfoInRoom[0].index].enemyCounter = 0;
+        roundInfos[roundInfoInRoom[0].index].roundEnemyAmount = 2 * roundInfos[roundInfoInRoom[0].index].round + 4;
+        roundInfos[roundInfoInRoom[0].index].enemiesRemaining = roundInfos[roundInfoInRoom[0].index].roundEnemyAmount;
+        if(roundInfos[roundInfoInRoom[0].index].enemySpeed <= .75){
+          roundInfos[roundInfoInRoom[0].index].enemySpeed += .05;
         }
-        spawnEnemies(roundInfos[roundInfoInRoom[0].index]);
+        if(roundInfos[roundInfoInRoom[0].index].timeBetweenEnemies >= 200){
+          roundInfos[roundInfoInRoom[0].index].timeBetweenEnemies-= 20;
+        }
+        roundInfos[roundInfoInRoom[0].index].enemyStartingHealth+= 5;
+
       }
-
-
-      updateBullets(room);
-      moveEnemies(room);
-      playerEnemyContact(playersInRoom, enemiesInRoom);
-
-      io.to(room).emit('killData', playerKills);
-      playerKills = [];
-    }else {
-      io.to(room).emit('sessionOver', roomSessionActive);
-      console.log(1);
+      spawnEnemies(roundInfos[roundInfoInRoom[0].index]);
     }
+
+
+    updateBullets(room);
+    moveEnemies(room);
+    playerEnemyContact(playersInRoom, enemiesInRoom);
+
+    
     if(playersInRoom.length == 0){
       rooms = rooms.filter(r => r != room);
       console.log("Removed room " + room);
     }
+
+    io.to(room).emit('killData', playerKills);
+    playerKills = [];
+
+
   }
 }
-
-function sessionInProgress(playersInRoom){
-  if(playersInRoom.length > 0){
-    playersInRoom.forEach(player => {
-      if(player.downed == false){
-        return true;
-      }
-    });
-    return false;
-  }
-  return true;
-}
-
 function returnPlayerLocationX(decimal){
   return (1000 * decimal);
 }

@@ -148,7 +148,6 @@ function setup() {
   }
   socket.emit('start', this.data);
 
-
 }
 
 function draw() {
@@ -178,6 +177,7 @@ function draw() {
     }
 
   }else if(gameActive){
+
     nameInput.hide();
     submitNameButton.hide();
     startGameButton.hide();
@@ -279,6 +279,20 @@ function updateMenus(serverPlayers){
   players = serverPlayers;
 }
 
+function allPlayersDowned(playersInRoom){
+  var count = 0;
+  playersInRoom.forEach(player => {
+    if(player.downed == false){
+      count++;
+    }
+  });
+  if(count > 0){
+    return false;
+  }else{
+    return true;
+  }
+}
+
 function startGame(){
   socket.emit('startRoom', clientPlayer.roomId);
 }
@@ -348,6 +362,9 @@ function sendDrawData(){
       gunIndex: clientPlayer.gunIndex,
   }
   socket.emit('drawData', data);
+  }
+  if(allPlayersDowned(players)){
+    socket.emit('allPlayersDowned', clientPlayer.roomId);
   }
 }
 
