@@ -88,7 +88,7 @@ io.sockets.on('connection',
     function(downedPlayerData){
       players[downedPlayerData.index].downed = true;
       players[downedPlayerData.index].previousWeapon = downedPlayerData.previousWeapon;
-      players[downedPlayerData.index].gun = 9;
+      //players[downedPlayerData.index].gun = 9;
       io.to(downedPlayerData.roomId).emit('downedPlayerMessage', downedPlayerData)
     });
 

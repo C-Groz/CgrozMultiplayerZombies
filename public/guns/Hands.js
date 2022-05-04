@@ -17,7 +17,7 @@ class Hands {
         this.bulletVelocity = 0;
         this.timeBetweenBullets = 0;
         this.name = "Unarmed";
-        this.textSize = 45;
+        this.textSize = 35;
         this.yDisplacement = 40;
         this.damageDecreaseConstant = 0;
 
@@ -33,6 +33,6 @@ class Hands {
 
     }
     reload(){
-        
+
     }
 }

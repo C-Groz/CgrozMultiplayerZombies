@@ -67,7 +67,7 @@ socket.on('playerRevived', function(downedPlayer){
     console.log(downedPlayer.previousWeapon);
     currentGun = guns[downedPlayer.previousWeapon];
     clientPlayer.gunIndex = downedPlayer.previousWeapon;
-    
+
   }
 })
 
