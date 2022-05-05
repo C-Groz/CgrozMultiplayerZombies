@@ -434,14 +434,13 @@ function updateBullets(roomId){
                 }else if(enemy.bulletInEnemy == i){
                     enemy.bulletInEnemy = -1;
                 }
-                if(bullets[i].damage <= 0){
-                  bullets.splice(i, 1);
-                }
-
-                if(enemy.health <= 0.01){
+                if(enemy.health <= 0){
                   players[bullets[i].playerFired].kills++;
                   removeEnemy(enemy.index, enemy.roomId);
                   bullets[i].bulletInEnemy = -1;
+                }
+                if(bullets[i].damage <= 0){
+                  bullets.splice(i, 1);
                 }
             }
             });
