@@ -9,7 +9,7 @@ let nameInput;
 let submitNameButton;
 let startGameButton;
 
-
+//comment
 
 let players = [];
 let doors = [];
