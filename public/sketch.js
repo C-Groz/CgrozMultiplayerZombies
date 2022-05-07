@@ -8,6 +8,8 @@ let sessionOver = false;
 let nameInput;
 let submitNameButton;
 let startGameButton;
+let runOnce = true;
+let playerStats;
 
 //comment
 
@@ -275,7 +277,58 @@ function draw() {
     text(currentDownedPlayerName + " is downed", windowWidth/2, windowHeight/2 + 200);
   }
   }else if(sessionOver){
-    text("Game Over", windowWidth/2, windowHeight/2);
+
+    if(runOnce){
+      playerStats = [
+        player1 = {
+          name: "",
+          kills: "",
+        },
+        player2 = {
+          name: "",
+          kills: "",
+        },
+        player3 = {
+          name: "",
+          kills: "",
+        },
+        player4 = {
+          name: "",
+          kills: "",
+        },
+      ]
+
+      var count = 0;
+      players.forEach(player => {
+        if(player.roomId == clientPlayer.roomId){
+          playerStats[count].name = player.name;
+          playerStats[count].kills = player.kills;
+          count++;
+        }
+      });
+      runOnce = false;
+    }
+
+    textSize(50);
+    fill(160, 10, 20);
+    text("Game Over", windowWidth/2, windowHeight/6);
+
+    textSize(30);
+    fill(0, 0, 0);
+    text("Player", windowWidth/2 - 125, windowHeight/2 - 125);
+    text("Kills", windowWidth/2 + 125, windowHeight/2 - 125);
+
+
+    for(var i = 0; i < 4; i++){
+      fill(105,105,105);
+      rect(windowWidth/2 - 250, windowHeight/2 - 100 + 50*i, 250, 50);
+      rect(windowWidth/2, windowHeight/2 - 100 + 50*i, 250, 50);
+
+      fill(220);
+      text(playerStats[i].name, windowWidth/2 - 125, windowHeight/2 - 75 + 50*i);
+      text(playerStats[i].kills, windowWidth/2 + 125, windowHeight/2 - 75 + 50*i);
+    }
+
   }
 }
 
