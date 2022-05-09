@@ -9,6 +9,7 @@ let nameInput;
 let submitNameButton;
 let startGameButton;
 let runOnce = true;
+let runOnce2 = true;
 let playerStats;
 
 //comment
@@ -419,7 +420,19 @@ function sendDrawData(){
   socket.emit('drawData', data);
   }
   if(allPlayersDowned(players)){
-    socket.emit('allPlayersDowned', clientPlayer.roomId);
+    if(runOnce2){
+      playerInfo = {
+        roomId: clientPlayer.roomId,
+        playerNames: [],
+        playerKills: [],
+      }
+      players.forEach(player => {
+        playerInfo.playerNames.push(player.name);
+        playerInfo.playerKills.push(player.kills);
+      });
+      socket.emit('allPlayersDowned', playerInfo);
+      runOnce2 = false;
+    }
   }
 }
 

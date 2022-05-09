@@ -2,6 +2,8 @@ const express = require("express");
 const socket = require('socket.io');
 const app = express();
 const short = require('short-uuid');
+const fs = require('fs')
+
 
 const Player = require("./Player");
 const Door = require("./Door");
@@ -70,9 +72,26 @@ io.sockets.on('connection',
         }
     });
 
-    socket.on('allPlayersDowned', function(room){
+    socket.once('allPlayersDowned', function(playerInfo){
       var gameActive = false;
-      io.to(room).emit('sessionOver', gameActive);
+      var playerNamesString = "";
+      var totalKills = 0;
+      var numPlayers = playerInfo.playerNames.length;
+      playerInfo.playerNames.forEach(name => {
+        if(name != undefined){
+          playerNamesString += name + ",";
+        }
+      });
+      playerInfo.playerKills.forEach(kill => {
+        if(kill != undefined){
+        totalKills += kill;
+        }
+      });
+
+      fs.appendFile('server/ScoreBoard.txt', playerNamesString + totalKills + "," + numPlayers + "," + Date.now() + "\n", (err) => {
+        if (err) throw err;
+      })
+      io.to(playerInfo.roomId).emit('sessionOver', gameActive);
     });
 
     socket.on('nameChange', 
