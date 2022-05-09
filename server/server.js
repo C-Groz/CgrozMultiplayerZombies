@@ -88,7 +88,7 @@ io.sockets.on('connection',
         }
       });
 
-      fs.appendFile('server/ScoreBoard.txt', playerNamesString + totalKills + "," + numPlayers + "," + Date.now() + "\n", (err) => {
+      fs.appendFile('ScoreBoard.txt', playerNamesString + totalKills + "," + numPlayers + "," + Date.now() + "\n", (err) => {
         if (err) throw err;
       })
       io.to(playerInfo.roomId).emit('sessionOver', gameActive);
