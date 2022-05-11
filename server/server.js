@@ -2,14 +2,14 @@ const express = require("express");
 const socket = require('socket.io');
 const app = express();
 const short = require('short-uuid');
-//const mysql = require('mysql');
-/*
+const mysql = require('mysql');
+
 const connection = mysql.createConnection({
-  host: 'localhost', // host for connection
+  host: 'ip-10-1-1-128', // host for connection
   port: 3306, // default port for mysql is 3306
-  database: 'score', // database from which we want to connect out node application
-  user: 'root', // username of the mysql connection
-  password: 'SQL45rootuser.0' // password of the mysql connection
+  database: 'sys', // database from which we want to connect out node application
+  user: 'cgrozscores', // username of the mysql connection
+  password: 'SQL45admin.0' // password of the mysql connection
   });
 
 connection.connect(function (err) {
@@ -21,7 +21,7 @@ connection.connect(function (err) {
   }
  });
 
-*/
+
 const Player = require("./Player");
 const Door = require("./Door");
 const Bullet = require("./Bullet");
@@ -93,7 +93,7 @@ io.sockets.on('connection',
     socket.once('allPlayersDowned', function(playerInfo){
       var gameActive = false;
       io.to(playerInfo.roomId).emit('sessionOver', gameActive);
-      /*
+
       var playerNamesString = "";
       var totalKills = 0;
       var numPlayers = playerInfo.playerNames.length;
@@ -126,15 +126,14 @@ io.sockets.on('connection',
       replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2');
 
       var sql = "INSERT INTO " + gameType + " (name, kills, date) VALUES ('" + playerNamesString + "', '" + totalKills + "', '" + today + "')";
-      
-      if(lastRoomLoggedInDB != playerInfo.roomId){
+      if(lastRoomLoggedInDB != playerInfo.roomId || gameType == ""){
         connection.query(sql, function (err, result) {
           if (err) throw err;
           console.log("1 record inserted");
         });
         lastRoomLoggedInDB = playerInfo.roomId;
       }
-      */
+      
     });
 
     socket.on('nameChange', 
