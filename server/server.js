@@ -6,7 +6,7 @@ const mysql = require('mysql');
 
 const connection = mysql.createConnection({
   host: 'ip-10-1-1-128', // host for connection
-  port: '/var/run/mysqld/mysqld.sock', // default port for mysql is 3306
+  port: '/tmp/mysql.sock', // default port for mysql is 3306
   database: 'cgrozscores', // database from which we want to connect out node application
   user: 'admin', // username of the mysql connection
   password: 'SQL45admin.0' // password of the mysql connection
