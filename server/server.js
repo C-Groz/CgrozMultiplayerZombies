@@ -2,8 +2,8 @@ const express = require("express");
 const socket = require('socket.io');
 const app = express();
 const short = require('short-uuid');
-const mysql = require('mysql');
-
+//const mysql = require('mysql');
+/*
 const connection = mysql.createConnection({
   host: 'localhost', // host for connection
   port: 3306, // default port for mysql is 3306
@@ -21,7 +21,7 @@ connection.connect(function (err) {
   }
  });
 
-
+*/
 const Player = require("./Player");
 const Door = require("./Door");
 const Bullet = require("./Bullet");
@@ -93,7 +93,7 @@ io.sockets.on('connection',
     socket.once('allPlayersDowned', function(playerInfo){
       var gameActive = false;
       io.to(playerInfo.roomId).emit('sessionOver', gameActive);
-
+      /*
       var playerNamesString = "";
       var totalKills = 0;
       var numPlayers = playerInfo.playerNames.length;
@@ -134,6 +134,7 @@ io.sockets.on('connection',
         });
         lastRoomLoggedInDB = playerInfo.roomId;
       }
+      */
     });
 
     socket.on('nameChange', 
