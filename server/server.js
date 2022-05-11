@@ -7,7 +7,7 @@ const mysql = require('mysql');
 const connection = mysql.createConnection({
   host: 'cgrozscores.cluster-chkzmm1hkwlm.us-east-1.rds.amazonaws.com', // host for connection
   port: '3306', // default port for mysql is 3306
-  database: 'cgrozscores-instance-1', // database from which we want to connect out node application
+  database: 'cgrozscores', // database from which we want to connect out node application
   user: 'admin', // username of the mysql connection
   password: 'SQL45admin.0' // password of the mysql connection
   });
