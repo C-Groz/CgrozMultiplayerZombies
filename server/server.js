@@ -19,8 +19,7 @@ connection.connect(function (err) {
   else{
     console.log("connection created with Mysql successfully");
   }
- });
- connection.end();
+});
 
 
 const Player = require("./Player");
@@ -128,22 +127,12 @@ io.sockets.on('connection',
 
       var sql = "INSERT INTO " + gameType + " (name, kills, date) VALUES ('" + playerNamesString + "', '" + totalKills + "', '" + today + "')";
       if(lastRoomLoggedInDB != playerInfo.roomId || gameType == ""){
-        connection.connect(function (err) {
-          if(err){
-            console.log("unable to reconnect to server");
-          }
-          else{
-            console.log("connection successful");
-          }
-         });
         connection.query(sql, function (err, result) {
           if (err) throw err;
           console.log("1 record inserted");
         });
         lastRoomLoggedInDB = playerInfo.roomId;
-        connection.end();
       }
-      
     });
 
     socket.on('nameChange', 
