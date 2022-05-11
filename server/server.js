@@ -5,7 +5,7 @@ const short = require('short-uuid');
 const mysql = require('mysql');
 
 const connection = mysql.createConnection({
-  host: 'safe-sands-40981.herokuapp.com/', // host for connection
+  host: 'localhost', // host for connection
   port: 3306, // default port for mysql is 3306
   database: 'score', // database from which we want to connect out node application
   user: 'root', // username of the mysql connection
