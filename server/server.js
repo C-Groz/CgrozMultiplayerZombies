@@ -5,7 +5,7 @@ const short = require('short-uuid');
 const mysql = require('mysql');
 
 const connection = mysql.createConnection({
-  host: 'cgrozscores.cluster-chkzmm1hkwlm.us-east-1.rds.amazonaws.com', // host for connection
+  host: 'scoredatabase.chkzmm1hkwlm.us-east-1.rds.amazonaws.com', // host for connection
   port: '3306', // default port for mysql is 3306
   database: 'sys', // database from which we want to connect out node application
   user: 'admin', // username of the mysql connection
