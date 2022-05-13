@@ -4,6 +4,8 @@ const app = express();
 const short = require('short-uuid');
 const mysql = require('mysql');
 
+
+let sqlConnected = false;
 const connection = mysql.createConnection({
   host: 'scoredatabase.chkzmm1hkwlm.us-east-1.rds.amazonaws.com', // host for connection
   port: '3306', // default port for mysql is 3306
@@ -36,7 +38,6 @@ app.use(express.static("public"));
 const io = socket(server);
 
 let rooms = [short.generate()];
-let sqlConnected = false;
 let lastRoomLoggedInDB = "";
 let players = [];
 let doors = [];
