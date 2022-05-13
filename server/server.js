@@ -12,14 +12,14 @@ const connection = mysql.createConnection({
   password: 'SQL45admin.0' // password of the mysql connection
   });
 
-connection.connect(function (err) {
-  if(err){
-    console.log("err: " + err);
-  }
-  else{
-    console.log("connection created with Mysql successfully");
-  }
-});
+try{
+  connection.connect();
+  sqlConnected = true;
+
+}catch(err){
+  console.log('unable to connect to mysql err: ' + err);
+  sqlConnected = false;
+}
 
 
 const Player = require("./Player");
@@ -36,6 +36,7 @@ app.use(express.static("public"));
 const io = socket(server);
 
 let rooms = [short.generate()];
+let sqlConnected = false;
 let lastRoomLoggedInDB = "";
 let players = [];
 let doors = [];
@@ -94,44 +95,47 @@ io.sockets.on('connection',
       var gameActive = false;
       io.to(playerInfo.roomId).emit('sessionOver', gameActive);
 
-      var playerNamesString = "";
-      var totalKills = 0;
-      var numPlayers = playerInfo.playerNames.length;
-      var gameType;
-      playerInfo.playerNames.forEach(name => {
-        if(name != undefined){
-          playerNamesString += name + ",";
-        }
-      });
-      playerNamesString = playerNamesString.substring(0, playerNamesString.length - 1);
-      playerInfo.playerKills.forEach(kill => {
-        if(kill != undefined){
-        totalKills += kill;
-        }
-      });
-      if(numPlayers == 1){
-        gameType = "solos";
-      }
-      else if(numPlayers == 2){
-        gameType = "duos";
-      }
-      else if(numPlayers == 3){
-        gameType = "trios";
-      }
-      else if(numPlayers == 4){
-        gameType = "quads";
-      }
-      var today = new Date().
-      toLocaleString('en-us', {year: 'numeric', month: '2-digit', day: '2-digit'}).
-      replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2');
-
-      var sql = "INSERT INTO " + gameType + " (name, kills, date) VALUES ('" + playerNamesString + "', '" + totalKills + "', '" + today + "')";
-      if(lastRoomLoggedInDB != playerInfo.roomId || gameType == ""){
-        connection.query(sql, function (err, result) {
-          if (err) throw err;
-          console.log("1 record inserted");
+      if(sqlConnected){
+        var playerNamesString = "";
+        var totalKills = 0;
+        var numPlayers = playerInfo.playerNames.length;
+        var gameType;
+        playerInfo.playerNames.forEach(name => {
+          if(name != undefined){
+            playerNamesString += name + ",";
+          }
         });
-        lastRoomLoggedInDB = playerInfo.roomId;
+        playerNamesString = playerNamesString.substring(0, playerNamesString.length - 1);
+        playerInfo.playerKills.forEach(kill => {
+          if(kill != undefined){
+          totalKills += kill;
+          }
+        });
+        if(numPlayers == 1){
+          gameType = "solos";
+        }
+        else if(numPlayers == 2){
+          gameType = "duos";
+        }
+        else if(numPlayers == 3){
+          gameType = "trios";
+        }
+        else if(numPlayers == 4){
+          gameType = "quads";
+        }
+        var today = new Date().
+        toLocaleString('en-us', {year: 'numeric', month: '2-digit', day: '2-digit'}).
+        replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2');
+
+        var sql = "INSERT INTO " + gameType + " (name, kills, date) VALUES ('" + playerNamesString + "', '" + totalKills + "', '" + today + "')";
+        if(lastRoomLoggedInDB != playerInfo.roomId || gameType == ""){
+          connection.query(sql, function (err, result) {
+            if (err) throw err;
+            console.log("1 record inserted");
+          });
+          lastRoomLoggedInDB = playerInfo.roomId;
+        }
+
       }
     });
 
