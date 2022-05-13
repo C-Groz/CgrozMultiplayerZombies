@@ -67,11 +67,12 @@ socket.on('downedPlayerMessage', function(downedPlayerData){
 socket.on('playerRevived', function(downedPlayer){
   if(downedPlayer.index == clientPlayer.index){
     clientMap.playerSpeed = 5;
-    currentGun = guns[downedPlayer.previousWeapon];
-    if(downedPlayer.previousWeapon == 9){
-      currentGun = guns[0];
+    currentGun = guns[0];
+    clientPlayer.gunIndex = 0;
+
+    if(score.money <= 500){
+      score.money = 500;
     }
-    clientPlayer.gunIndex = downedPlayer.previousWeapon;
     
   }
 })
