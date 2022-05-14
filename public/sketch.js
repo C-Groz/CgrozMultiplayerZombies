@@ -1,7 +1,7 @@
 
 
-const socket = io.connect('https://safe-sands-40981.herokuapp.com/', { transports : ['websocket'] });
-//const socket = io.connect('localhost:3000');
+//const socket = io.connect('https://safe-sands-40981.herokuapp.com/', { transports : ['websocket'] });
+const socket = io.connect('localhost:3000');
 
 let gameActive = false;
 let sessionOver = false;
@@ -11,6 +11,8 @@ let startGameButton;
 let runOnce = true;
 let runOnce2 = true;
 let playerStats;
+let leaderBoardData;
+let leaderBoardActive = false;
 
 //comment
 
@@ -75,6 +77,10 @@ socket.on('playerRevived', function(downedPlayer){
     }
     
   }
+});
+
+socket.on('leaderBoardData', function(data){
+  leaderBoardData = data;
 })
 
 socket.once('setPlayerNum', function(playerInfo){
@@ -93,6 +99,7 @@ socket.once('startGame', function(startDoors){
   }
   socket.emit('mapData', mapCoords);
   gameActive = true;
+  closeLeaderBoard();
 });
 
 
@@ -140,6 +147,8 @@ function setup() {
   nameInput = createInput('Enter Name');
   submitNameButton = createButton('Submit');
   startGameButton = createButton('Start Game');
+  leaderBoardButton = createButton('Leaderboard');
+  closeLeaderBoardButton = createButton('Close');
 
   nameInput.position(windowWidth/2 - 100, windowHeight/2 + 15, 0);
   submitNameButton.position(windowWidth/2 + 50, windowHeight/2 + 15, 0);
@@ -147,6 +156,19 @@ function setup() {
   startGameButton.position(windowWidth/2 - 150, windowHeight/2 + 50, 0);
   startGameButton.mousePressed(startGame);
   startGameButton.size(300, 50);
+  startGameButton.style('font-size', '35px');
+  let col = color(134, 194, 156);
+  startGameButton.style('background-color', col);
+  leaderBoardButton.size(300, 50);
+  leaderBoardButton.position(windowWidth/2 - 150, windowHeight/2 + 100, 0);
+  leaderBoardButton.mousePressed(activateLeaderboard);
+  leaderBoardButton.style('font-size', '35px');
+  closeLeaderBoardButton.mousePressed(closeLeaderBoard);
+  closeLeaderBoardButton.size(100, 50);
+  closeLeaderBoardButton.style('font-size', '30px');
+  closeLeaderBoardButton.hide();
+
+
 
   this.data = {
     winW: windowWidth,
@@ -188,6 +210,7 @@ function draw() {
 
     nameInput.hide();
     submitNameButton.hide();
+    leaderBoardButton.hide();
     startGameButton.hide();
     clientPlayer.determineAngle();
     clientMap.move();
@@ -332,6 +355,25 @@ function draw() {
     }
 
   }
+  if(leaderBoardActive){
+    nameInput.hide();
+    submitNameButton.hide();
+    leaderBoardButton.hide();
+    startGameButton.hide();
+    fill(105,105,105);
+    rect(50, 50, windowWidth - 100, windowHeight - 100, 50);
+    closeLeaderBoardButton.show();
+    closeLeaderBoardButton.position(windowWidth/2 - 50, windowHeight - 100);
+  }
+}
+
+function closeLeaderBoard(){
+  leaderBoardActive = false;
+  nameInput.show();
+  submitNameButton.show();
+  leaderBoardButton.show();
+  startGameButton.show();
+  closeLeaderBoardButton.hide();
 }
 
 function updateMenus(serverPlayers){
@@ -353,7 +395,12 @@ function allPlayersDowned(playersInRoom){
 }
 
 function startGame(){
+  leaderBoardActive = false;
   socket.emit('startRoom', clientPlayer.roomId);
+}
+
+function activateLeaderboard(){
+  leaderBoardActive = true;
 }
 
 function changeName(){

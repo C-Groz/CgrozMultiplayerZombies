@@ -4,26 +4,6 @@ const app = express();
 const short = require('short-uuid');
 const mysql = require('mysql');
 
-
-let sqlConnected = false;
-const connection = mysql.createConnection({
-  host: 'scoredatabase.chkzmm1hkwlm.us-east-1.rds.amazonaws.com', // host for connection
-  port: '3306', // default port for mysql is 3306
-  database: 'sys', // database from which we want to connect out node application
-  user: 'admin', // username of the mysql connection
-  password: 'SQL45admin.0' // password of the mysql connection
-  });
-
-try{
-  connection.connect();
-  sqlConnected = true;
-
-}catch(err){
-  console.log('unable to connect to mysql err: ' + err);
-  sqlConnected = false;
-}
-
-
 const Player = require("./Player");
 const Door = require("./Door");
 const Bullet = require("./Bullet");
@@ -37,6 +17,30 @@ console.log('The server is now running at port ' + process.env.PORT);
 app.use(express.static("public"));
 const io = socket(server);
 
+let sqlConnected = false;
+let LBsolos;
+let LBduos;
+let LBtrios;
+let LBquads;
+
+const connection = mysql.createConnection({
+  host: 'scoredatabase.chkzmm1hkwlm.us-east-1.rds.amazonaws.com', // host for connection
+  port: '3306', // default port for mysql is 3306
+  database: 'sys', // database from which we want to connect out node application
+  user: 'admin', // username of the mysql connection
+  password: 'SQL45admin.0' // password of the mysql connection
+  });
+
+try{
+  connection.connect();
+  sqlConnected = true;
+  updateLeaderBoard();
+
+}catch(err){
+  console.log('unable to connect to mysql err: ' + err);
+  sqlConnected = false;
+}
+
 let rooms = [short.generate()];
 let lastRoomLoggedInDB = "";
 let players = [];
@@ -48,6 +52,9 @@ var enemies = []
 var mapData;
 var playerKills = [];
 setInterval(updateGame, 8); //default 16 
+setInterval(updateLeaderBoard, 12000);
+
+
 
 io.sockets.on('connection', 
   function(socket) {
@@ -268,6 +275,47 @@ function updateGame() {
 
   }
 }
+
+function updateLeaderBoard(){
+  if(sqlConnected){
+    try{
+      var sql = "SELECT * FROM solos ORDER BY kills DESC LIMIT 0, 3;"
+      connection.query(sql, function (err, result) {
+        if (err) throw err;
+        LBsolos = result;
+      });
+
+      sql = "SELECT * FROM duos ORDER BY kills DESC LIMIT 0, 3;"
+      connection.query(sql, function (err, result) {
+        if (err) throw err;
+        LBduos = result;
+      });
+
+      sql = "SELECT * FROM trios ORDER BY kills DESC LIMIT 0, 3;"
+      connection.query(sql, function (err, result) {
+        if (err) throw err;
+        LBtrios = result;
+      });
+
+      sql = "SELECT * FROM quads ORDER BY kills DESC LIMIT 0, 3;"
+      connection.query(sql, function (err, result) {
+        if (err) throw err;
+        LBquads = result;
+      });
+      data = {
+        solos: LBsolos,
+        duos: LBduos,
+        trios: LBtrios,
+        quads: LBquads,
+      };
+      io.sockets.emit('leaderBoardData', data);
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
+}
+
 function returnPlayerLocationX(decimal){
   return (1000 * decimal);
 }
