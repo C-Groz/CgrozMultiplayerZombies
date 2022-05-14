@@ -1,4 +1,3 @@
-const { text } = require("body-parser");
 
 
 const socket = io.connect('https://safe-sands-40981.herokuapp.com/', { transports : ['websocket'] });
