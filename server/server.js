@@ -35,7 +35,7 @@ try{
   connection.connect();
   sqlConnected = true;
   updateLeaderBoard();
-
+  console.log('sql connected');
 }catch(err){
   console.log('unable to connect to mysql err: ' + err);
   sqlConnected = false;
