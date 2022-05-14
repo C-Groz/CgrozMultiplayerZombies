@@ -1,3 +1,4 @@
+const { text } = require("body-parser");
 
 
 const socket = io.connect('https://safe-sands-40981.herokuapp.com/', { transports : ['websocket'] });
@@ -364,6 +365,15 @@ function draw() {
     rect(50, 50, windowWidth - 100, windowHeight - 100, 50);
     closeLeaderBoardButton.show();
     closeLeaderBoardButton.position(windowWidth/2 - 50, windowHeight - 100);
+
+    if(leaderBoardData != null){
+      textSize(50);
+      text("Solos", windowWidth/2, windowHeight/5);
+      text("Duos", windowWidth/2, (windowHeight/5)*2);
+      text("Trios", windowWidth/2, (windowHeight/5)*3);
+      text("Quads", windowWidth/2, (windowHeight/5)*4);
+
+    }
   }
 }
 

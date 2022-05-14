@@ -29,7 +29,7 @@ const connection = mysql.createConnection({
   database: 'sys', // database from which we want to connect out node application
   user: 'admin', // username of the mysql connection
   password: 'SQL45admin.0' // password of the mysql connection
-  });
+});
 
 try{
   connection.connect();
