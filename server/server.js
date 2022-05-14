@@ -62,6 +62,7 @@ io.sockets.on('connection',
 
     socket.on('start', 
     function(data){
+      updateLeaderBoard();
       userCounter++;
 
       var roomId = getRoom();

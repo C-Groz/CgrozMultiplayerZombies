@@ -8,7 +8,7 @@ class Score{
         this.ammoIn = currentGun.startingIn;
         this.reloading = false;
     }
-//
+
     drawScoreLayout(){
 
         //bottom right menu (round, kills, money, enemies)
