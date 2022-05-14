@@ -366,6 +366,7 @@ function draw() {
     closeLeaderBoardButton.position(windowWidth/2 - 50, windowHeight - 100);
 
     if(leaderBoardData != null){
+      fill(200, 200, 200)
       textSize(50);
       text("Solos", windowWidth/2, windowHeight/5);
       text("Duos", windowWidth/2, (windowHeight/5)*2);
