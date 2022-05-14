@@ -111,10 +111,10 @@ io.sockets.on('connection',
         var gameType;
         playerInfo.playerNames.forEach(name => {
           if(name != undefined){
-            playerNamesString += name + ",";
+            playerNamesString += name + ", ";
           }
         });
-        playerNamesString = playerNamesString.substring(0, playerNamesString.length - 1);
+        playerNamesString = playerNamesString.substring(0, playerNamesString.length - 2);
         playerInfo.playerKills.forEach(kill => {
           if(kill != undefined){
           totalKills += kill;
