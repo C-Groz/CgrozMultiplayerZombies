@@ -222,58 +222,62 @@ io.sockets.on('connection',
 
 function updateGame() {
   for (const room of rooms) {
-    var playersInRoom = players.filter(p => p.roomId === room);
-    var doorsInRoom = doors.filter(d => d.roomId === room);
-    var bulletsInRoom = bullets.filter(b => b.roomId === room);
-    var enemiesInRoom = enemies.filter(e => e.roomId === room);
-    var roundInfoInRoom = roundInfos.filter(r => r.roomId === room);
-  
-    io.to(room).emit("heartbeat", playersInRoom);
-    io.to(room).emit("doorData", doorsInRoom);
-    io.to(room).emit('bulletData', bulletsInRoom);
-    io.to(room).emit('enemyData', enemiesInRoom);
-    io.to(room).emit('roundData', roundInfoInRoom);
+    try{
+      var playersInRoom = players.filter(p => p.roomId === room);
+      var doorsInRoom = doors.filter(d => d.roomId === room);
+      var bulletsInRoom = bullets.filter(b => b.roomId === room);
+      var enemiesInRoom = enemies.filter(e => e.roomId === room);
+      var roundInfoInRoom = roundInfos.filter(r => r.roomId === room);
     
-    players.forEach(element =>{
-      playerKills.push(element.kills);
-      element.x = returnPlayerLocationX(element.decX);
-      element.y = returnPlayerLocationY(element.decY);
-    });
+      io.to(room).emit("heartbeat", playersInRoom);
+      io.to(room).emit("doorData", doorsInRoom);
+      io.to(room).emit('bulletData', bulletsInRoom);
+      io.to(room).emit('enemyData', enemiesInRoom);
+      io.to(room).emit('roundData', roundInfoInRoom);
+      
+      players.forEach(element =>{
+        playerKills.push(element.kills);
+        element.x = returnPlayerLocationX(element.decX);
+        element.y = returnPlayerLocationY(element.decY);
+      });
 
 
-    if(roundInfoInRoom[0] != null){
-      if(roundInfoInRoom[0].enemiesRemaining <= 0 && enemiesInRoom.length == 0 && roundInfoInRoom[0].enemyCounter == roundInfoInRoom[0].roundEnemyAmount){
-        roundInfos[roundInfoInRoom[0].index].round++;
-        roundInfos[roundInfoInRoom[0].index].enemyCounter = 0;
-        roundInfos[roundInfoInRoom[0].index].roundEnemyAmount = 2 * roundInfos[roundInfoInRoom[0].index].round + 4;
-        roundInfos[roundInfoInRoom[0].index].enemiesRemaining = roundInfos[roundInfoInRoom[0].index].roundEnemyAmount;
-        if(roundInfos[roundInfoInRoom[0].index].enemySpeed <= 1){
-          roundInfos[roundInfoInRoom[0].index].enemySpeed += .05;
+      if(roundInfoInRoom[0] != null){
+        if(roundInfoInRoom[0].enemiesRemaining <= 0 && enemiesInRoom.length == 0 && roundInfoInRoom[0].enemyCounter == roundInfoInRoom[0].roundEnemyAmount){
+          roundInfos[roundInfoInRoom[0].index].round++;
+          roundInfos[roundInfoInRoom[0].index].enemyCounter = 0;
+          roundInfos[roundInfoInRoom[0].index].roundEnemyAmount = 2 * roundInfos[roundInfoInRoom[0].index].round + 4;
+          roundInfos[roundInfoInRoom[0].index].enemiesRemaining = roundInfos[roundInfoInRoom[0].index].roundEnemyAmount;
+          if(roundInfos[roundInfoInRoom[0].index].enemySpeed <= 1){
+            roundInfos[roundInfoInRoom[0].index].enemySpeed += .05;
+          }
+          if(roundInfos[roundInfoInRoom[0].index].timeBetweenEnemies >= 200){
+            roundInfos[roundInfoInRoom[0].index].timeBetweenEnemies-= 20;
+          }
+          roundInfos[roundInfoInRoom[0].index].enemyStartingHealth+= 5;
+
         }
-        if(roundInfos[roundInfoInRoom[0].index].timeBetweenEnemies >= 200){
-          roundInfos[roundInfoInRoom[0].index].timeBetweenEnemies-= 20;
-        }
-        roundInfos[roundInfoInRoom[0].index].enemyStartingHealth+= 5;
-
+        spawnEnemies(roundInfos[roundInfoInRoom[0].index]);
       }
-      spawnEnemies(roundInfos[roundInfoInRoom[0].index]);
-    }
 
 
-    updateBullets(room);
-    moveEnemies(room);
-    playerEnemyContact(playersInRoom, enemiesInRoom);
+      updateBullets(room);
+      moveEnemies(room);
+      playerEnemyContact(playersInRoom, enemiesInRoom);
 
-    
-    if(playersInRoom.length == 0){
+      
+      if(playersInRoom.length == 0){
+        rooms = rooms.filter(r => r != room);
+        console.log("Removed room " + room);
+      }
+
+      io.to(room).emit('killData', playerKills);
+      playerKills = [];
+    }catch(err){
+      console.log("room: " + room + " err: " + err);
       rooms = rooms.filter(r => r != room);
-      console.log("Removed room " + room);
+      console.log("Removed room due to err" + room);    
     }
-
-    io.to(room).emit('killData', playerKills);
-    playerKills = [];
-
-
   }
 }
 
