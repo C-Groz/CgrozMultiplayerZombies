@@ -363,34 +363,34 @@ function draw() {
     fill(105,105,105);
     rect(50, 50, windowWidth - 100, windowHeight - 100, 50);
     closeLeaderBoardButton.show();
-    closeLeaderBoardButton.position(windowWidth/2 - 50, windowHeight - 50);
+    closeLeaderBoardButton.position(windowWidth/2 - 50, windowHeight - 100);
     if(leaderBoardData != null){
       fill(230, 230, 230)
       textSize(40);
-      text("Solos", windowWidth/2, (windowHeight/20)*3);
+      text("Solos", windowWidth/2, (windowHeight/20)*2);
       for(var i = 0; i < 3; i++){
         textSize(20);
-        text(leaderBoardData.solos[i].name + ": " + leaderBoardData.solos[i].kills, windowWidth/2, (windowHeight/20)*(4 + (i)));
+        text(leaderBoardData.solos[i].name + ": " + leaderBoardData.solos[i].kills, windowWidth/2, (windowHeight/20)*(3 + (i)));
       }
 
       textSize(40);
-      text("Duos", windowWidth/2, (windowHeight/20)*7);
+      text("Duos", windowWidth/2, (windowHeight/20)*6);
       for(var i = 0; i < 3; i++){
         textSize(20);
-        text(leaderBoardData.duos[i].name + ": " + leaderBoardData.duos[i].kills, windowWidth/2, (windowHeight/20)*(8 + (i)));
+        text(leaderBoardData.duos[i].name + ": " + leaderBoardData.duos[i].kills, windowWidth/2, (windowHeight/20)*(7 + (i)));
       }
       textSize(40);
-      text("Trios", windowWidth/2, (windowHeight/20)*11);
+      text("Trios", windowWidth/2, (windowHeight/20)*10);
       for(var i = 0; i < 3; i++){
         textSize(20);
-        text(leaderBoardData.trios[i].name + ": " + leaderBoardData.trios[i].kills, windowWidth/2, (windowHeight/20)*(12 + (i)));
+        text(leaderBoardData.trios[i].name + ": " + leaderBoardData.trios[i].kills, windowWidth/2, (windowHeight/20)*(11 + (i)));
       }
 
       textSize(40);
-      text("Quads", windowWidth/2, (windowHeight/20)*15);
+      text("Quads", windowWidth/2, (windowHeight/20)*14);
       for(var i = 0; i < 3; i++){
         textSize(20);
-        text(leaderBoardData.quads[i].name + ": " + leaderBoardData.quads[i].kills, windowWidth/2, (windowHeight/20)*(16 + (i)));
+        text(leaderBoardData.quads[i].name + ": " + leaderBoardData.quads[i].kills, windowWidth/2, (windowHeight/20)*(15 + (i)));
       }
     }
   }
