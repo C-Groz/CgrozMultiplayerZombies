@@ -236,9 +236,11 @@ function updateGame() {
       io.to(room).emit('roundData', roundInfoInRoom);
     
       players.forEach(element =>{
-        playerKills.push(element.kills);
-        element.x = returnPlayerLocationX(element.decX);
-        element.y = returnPlayerLocationY(element.decY);
+        if(element != null){
+          playerKills.push(element.kills);
+          element.x = returnPlayerLocationX(element.decX);
+          element.y = returnPlayerLocationY(element.decY);
+        }
       });
 
 
