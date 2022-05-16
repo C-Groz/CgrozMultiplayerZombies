@@ -107,6 +107,7 @@ socket.once('startGame', function(startDoors){
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
+  players = [];
   clientPlayer = new ClientPlayer();
   mbox = new MysteryBox(300, 950);
   clientMap = new ClientGameMap(windowWidth/2 - 300, windowHeight - 750);
