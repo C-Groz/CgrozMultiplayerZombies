@@ -13,7 +13,7 @@ class Deagle extends Pistol{
         this.startingIn = 7; //mag size/starting ammo
         this.startingOut = 49;
         this.reloadTime = 800;
-        this.damage = 50;
+        this.damage = 70;
         this.bulletVelocity = 17;
         this.name = "Deagle";
         this.textSize = 40;

@@ -13,7 +13,7 @@ class Magnum extends Pistol{
         this.startingIn = 6; //mag size/starting ammo
         this.startingOut = 42;
         this.reloadTime = 1300;
-        this.damage = 80;
+        this.damage = 100;
         this.bulletVelocity = 16;
         this.name = "Magnum";
         this.textSize = 35;
