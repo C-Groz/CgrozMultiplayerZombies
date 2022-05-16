@@ -228,6 +228,12 @@ function updateGame() {
       var bulletsInRoom = bullets.filter(b => b.roomId === room);
       var enemiesInRoom = enemies.filter(e => e.roomId === room);
       var roundInfoInRoom = roundInfos.filter(r => r.roomId === room);
+
+      io.to(room).emit("heartbeat", playersInRoom);
+      io.to(room).emit("doorData", doorsInRoom);
+      io.to(room).emit('bulletData', bulletsInRoom);
+      io.to(room).emit('enemyData', enemiesInRoom);
+      io.to(room).emit('roundData', roundInfoInRoom);
     
       players.forEach(element =>{
         playerKills.push(element.kills);
@@ -265,13 +271,8 @@ function updateGame() {
         console.log("Removed room " + room);
       }
 
-      io.to(room).emit("heartbeat", playersInRoom);
-      io.to(room).emit("doorData", doorsInRoom);
-      io.to(room).emit('bulletData', bulletsInRoom);
-      io.to(room).emit('enemyData', enemiesInRoom);
-      io.to(room).emit('roundData', roundInfoInRoom);
       io.to(room).emit('killData', playerKills);
-      
+
       playerKills = [];
     }catch(err){
       console.log("room: " + room + " err: " + err);
