@@ -160,7 +160,7 @@ io.sockets.on('connection',
 
     
     socket.on('playerRevive', function(downedPlayer){
-      players[downedPlayer.index].gun = downedPlayer.previousWeapon;
+      players[downedPlayer.index].gun = 0;
       players[downedPlayer.index].downed = false;
       players[downedPlayer.index].health = 100;
       io.to(downedPlayer.roomId).emit('playerRevived', downedPlayer);
