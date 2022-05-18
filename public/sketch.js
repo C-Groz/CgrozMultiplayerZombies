@@ -68,7 +68,7 @@ socket.on('downedPlayerMessage', function(playerData){
 });
 
 socket.on('playerDown', function(playerData){
-  if(playerData.id == clientPlayer.id && playerData.roomId == clientPlayer.roomId){
+  if(playerData.index == clientPlayer.index && playerData.roomId == clientPlayer.roomId){
     downPlayer();
   }
 });
