@@ -78,7 +78,7 @@ socket.on('playerRevived', function(downedPlayer){
     clientMap.playerSpeed = 5;
     currentGun = guns[0];
     clientPlayer.gunIndex = 0;
-
+    players[clientPlayer.index].health = 100;
     if(score.money <= 500){
       score.money = 500;
     }
