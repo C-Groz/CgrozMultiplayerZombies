@@ -1,7 +1,7 @@
 
 
-const socket = io.connect('https://safe-sands-40981.herokuapp.com/', { transports : ['websocket'] });
-//const socket = io.connect('localhost:3000');
+//const socket = io.connect('https://safe-sands-40981.herokuapp.com/', { transports : ['websocket'] });
+const socket = io.connect('localhost:3000');
 
 let gameActive = false;
 let sessionOver = false;
@@ -63,9 +63,16 @@ socket.on("roundData", function(roundInfo){
   }
 });
 
-socket.on('downedPlayerMessage', function(downedPlayerData){
-  displayDownMessage(downedPlayerData.name);
-})
+socket.on('downedPlayerMessage', function(playerData){
+  displayDownMessage(playerData.name);
+});
+
+socket.on('playerDown', function(playerData){
+  if(playerData.id == clientPlayer.id && playerData.roomId == clientPlayer.roomId){
+    downPlayer();
+  }
+});
+
 socket.on('playerRevived', function(downedPlayer){
   if(downedPlayer.index == clientPlayer.index){
     clientMap.playerSpeed = 5;
@@ -222,10 +229,6 @@ function draw() {
     players.forEach(player => {
       player.draw();
     });
-
-    if(players[clientPlayer.roomIndex].health <= 0 && gameActive){
-      downPlayer();
-    }
 
     //reload
     if((keyIsDown(82) && !score.reloading) || score.ammoIn == 0 && !score.reloading){
@@ -449,19 +452,8 @@ function displayDownMessage(name){
 }
 
 function downPlayer(){
-  if(players[clientPlayer.roomIndex].health <= 0 && !players[clientPlayer.roomIndex].downed){
-    players[clientPlayer.roomIndex].downed = true;
-    let downedPlayerData = {
-      index: clientPlayer.index,
-      roomId: clientPlayer.roomId,
-      name: players[clientPlayer.roomIndex].name,
-      previousWeapon: clientPlayer.gunIndex,
-    }
-    socket.emit('playerDown', downedPlayerData);
-    currentGun = new Hands(clientPlayer.x, clientPlayer.y);
-    clientPlayer.gunIndex = 9;
-    clientMap.playerSpeed = 0;
-  }
+  currentGun = new Hands(clientPlayer.x, clientPlayer.y);
+  players[clientPlayer.index].gun = 9;
 }
 
 function updatePlayers(serverPlayers) {
