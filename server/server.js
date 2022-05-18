@@ -157,14 +157,8 @@ io.sockets.on('connection',
       })
     });
 
-    socket.on('playerDown', 
-    function(downedPlayerData){
-      players[downedPlayerData.index].downed = true;
-      players[downedPlayerData.index].previousWeapon = downedPlayerData.previousWeapon;
-      //players[downedPlayerData.index].gun = 9;
-      io.to(downedPlayerData.roomId).emit('downedPlayerMessage', downedPlayerData)
-    });
 
+    
     socket.on('playerRevive', function(downedPlayer){
       players[downedPlayer.index].gun = downedPlayer.previousWeapon;
       players[downedPlayer.index].downed = false;
@@ -242,6 +236,20 @@ function updateGame() {
           element.y = returnPlayerLocationY(element.decY);
         }
       });
+
+      playersInRoom.forEach(player => {
+        if(player.health <= 0 && !player.downed){
+          player.downed = true;
+          player.gun = 9;
+          let playerData = {
+            id: player.id,
+            roomId: room,
+            name: player.name,
+          }
+          io.to(room).emit('playerDown', playerData);
+          io.to(room).emit('downedPlayerMessage', playerData);
+        }
+      })
 
 
       if(roundInfoInRoom[0] != null){
