@@ -245,6 +245,7 @@ function updateGame() {
             id: player.id,
             roomId: room,
             name: player.name,
+            index: player.index,
           }
           io.to(room).emit('playerDown', playerData);
           io.to(room).emit('downedPlayerMessage', playerData);
