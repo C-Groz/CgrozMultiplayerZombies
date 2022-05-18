@@ -454,6 +454,8 @@ function displayDownMessage(name){
 function downPlayer(){
   currentGun = new Hands(clientPlayer.x, clientPlayer.y);
   players[clientPlayer.index].gun = 9;
+  clientPlayer.gun = 9;
+  clientPlayer.speed = 0;
 }
 
 function updatePlayers(serverPlayers) {
