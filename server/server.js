@@ -9,6 +9,7 @@ const Door = require("./Door");
 const Bullet = require("./Bullet");
 const Enemy = require("./Enemy");
 const RoundInfo = require("./RoundInfo");
+const { Client } = require("socket.io/dist/client");
 
 const ROOM_MAX_CAPACITY = 4;
 
@@ -285,6 +286,8 @@ function updateGame() {
       io.to(room).emit('killData', playerKills);
 
       playerKills = [];
+
+      
     }catch(err){
       console.log("room: " + room + " err: " + err);
       rooms = rooms.filter(r => r != room);

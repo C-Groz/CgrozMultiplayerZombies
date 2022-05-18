@@ -26,7 +26,9 @@ class OtherPlayer {
       let x = this.returnPlayerLocationX(this.decX);
       let y = this.returnPlayerLocationY(this.decY);
       circle(x, y, 25);
-  
+      if(this.downed){
+        this.gun = new Hands(x, y, this.angle)
+      }
       this.gun.drawGun(x, y, this.angle);
   
       textSize(30);
