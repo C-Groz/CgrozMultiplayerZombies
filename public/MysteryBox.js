@@ -118,11 +118,11 @@ class MysteryBox{
             new M4(0,0), //4
             new Famas(0,0), //5
             new MP5(0,0), //6
-            //new Olympia(0,0), //7
+            new Olympia(0,0), //7
             new Barrett(0,0), //8
         ]
         
-        this.guns.splice(this.gunIndex, 1);
+        this.guns.splice(this.gunIndex - 1, 1);
 
         score.ammoIn = currentGun.startingIn;
         score.ammoOut = currentGun.startingOut;
