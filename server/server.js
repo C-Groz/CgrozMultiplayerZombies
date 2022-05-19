@@ -111,7 +111,7 @@ io.sockets.on('connection',
         var numPlayers = playerInfo.numPlayersAtStart;
         var gameType;
         var kills = sessionKills.filter(session => session[0] == playerInfo.roomId);
-        kills = kills[0];
+        kills = kills[0][1];
         playerInfo.playerNames.forEach(name => {
           if(name != undefined){
             playerNamesString += name + ", ";
