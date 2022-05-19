@@ -506,15 +506,12 @@ function sendDrawData(){
   socket.emit('drawData', data);
   }
   if(allPlayersDowned(players)){
-    if(runOnce2){
-      playerInfo = {
-        roomId: clientPlayer.roomId,
-        playerNames: playerNamesInLobby,
-        numPlayersAtStart: numPlayersAtStart,
-      }
-      socket.emit('allPlayersDowned', playerInfo);
-      runOnce2 = false;
+    
+    playerInfo = {
+      roomId: clientPlayer.roomId,
     }
+    socket.emit('allPlayersDowned', playerInfo);
+    
   }
 }
 

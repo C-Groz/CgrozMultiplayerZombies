@@ -51,7 +51,7 @@ let userCounter = 0;
 let bullets = [];
 var enemies = []
 var mapData;
-var sessionKills = [];
+var sessionInfo = [];
 var playerKills;
 setInterval(updateGame, 8); //default 16 
 setInterval(updateLeaderBoard, 12000);
@@ -107,10 +107,10 @@ io.sockets.on('connection',
       io.to(playerInfo.roomId).emit('sessionOver', gameActive);
 
       if(sqlConnected){
-        var playerNamesString = "";
-        var numPlayers = playerInfo.numPlayersAtStart;
+        var kills = sessionInfo.filter(session => session[0] == playerInfo.roomId)[0][1];
         var gameType;
-        var kills = sessionKills.filter(session => session[0] == playerInfo.roomId);
+        var numPlayers = sessionInfo.filter(session => session[0] == playerInfo.roomId)[0][2];
+        var playerNamesString = sessionInfo.filter(session => session[0] == playerInfo.roomId)[0][3];
         kills = kills[0][1];
         playerInfo.playerNames.forEach(name => {
           if(name != undefined){
@@ -191,7 +191,13 @@ io.sockets.on('connection',
       enemies.push(new Enemy(0, enemies.length, .25, 25, .25, room, 0));
       enemies.push(new Enemy(2, enemies.length, .25, 25, .25, room, 0));
       roundInfos.push(new RoundInfo(room, roundInfos.length));
-      sessionKills.push([room, 0]);
+      var playersInRoomStart = players.filter(p => p.roomId == room);
+      var playerNames = "";
+      playersInRoomStart.forEach(player => {
+        playerNames += player.name + ", ";
+      });
+      playerNames.substring(playerNames.length, 2);
+      sessionInfo.push([room, 0, playersInRoomStart.length, playerNames]);
       let doorsInRoomStart = doors.filter(d => d.roomId == room);
       io.to(room).emit("startGame", doorsInRoomStart);
     });
@@ -568,7 +574,7 @@ function updateBullets(roomId){
                 }
                 if(enemy.health <= 0){
                   players[bullets[i].playerFired].kills++;
-                  sessionKills.forEach(session => {
+                  sessionInfo.forEach(session => {
                     if(session[0] == players[bullets[i].playerFired].roomId){
                       session[1]++;
                     }
