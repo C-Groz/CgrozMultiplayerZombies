@@ -15,7 +15,6 @@ let leaderBoardData;
 let leaderBoardActive = false;
 let numPlayersAtStart = 0;
 let functionCounter = 0;
-let sessionKills = 0;
 let playerNamesInLobby = [];
 
 //comment
@@ -57,9 +56,6 @@ socket.on('killData', function(playerKills){
   if(playerKills[clientPlayer.index] > killData[clientPlayer.index]){
     score.money += 25 * (playerKills[clientPlayer.index] - killData[clientPlayer.index]);
   }
-  for(var i = 0; i < playerKills.length; i++){
-    sessionKills += playerKills[i] - killData[i];
-  };
   killData = playerKills;
 });
 socket.on('bulletData', function(bulletsFromServer){
@@ -514,7 +510,6 @@ function sendDrawData(){
       playerInfo = {
         roomId: clientPlayer.roomId,
         playerNames: playerNamesInLobby,
-        playerKills: sessionKills,
         numPlayersAtStart: numPlayersAtStart,
       }
       socket.emit('allPlayersDowned', playerInfo);

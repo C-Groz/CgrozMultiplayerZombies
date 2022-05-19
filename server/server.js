@@ -51,7 +51,7 @@ let userCounter = 0;
 let bullets = [];
 var enemies = []
 var mapData;
-var playerKills = [];
+var sessionsKills = [];
 setInterval(updateGame, 8); //default 16 
 setInterval(updateLeaderBoard, 12000);
 
@@ -107,9 +107,10 @@ io.sockets.on('connection',
 
       if(sqlConnected){
         var playerNamesString = "";
-        var totalKills = playerInfo.playerKills;
         var numPlayers = playerInfo.numPlayersAtStart;
         var gameType;
+        var kills = sessionKills.filter(session => session[0] == playerInfo.roomId);
+        kills = kills[0];
         playerInfo.playerNames.forEach(name => {
           if(name != undefined){
             playerNamesString += name + ", ";
@@ -133,7 +134,7 @@ io.sockets.on('connection',
         toLocaleString('en-us', {year: 'numeric', month: '2-digit', day: '2-digit'}).
         replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2');
 
-        var sql = "INSERT INTO " + gameType + " (name, kills, date) VALUES ('" + playerNamesString + "', '" + totalKills + "', '" + today + "')";
+        var sql = "INSERT INTO " + gameType + " (name, kills, date) VALUES ('" + playerNamesString + "', '" + kills + "', '" + today + "')";
         if(lastRoomLoggedInDB != playerInfo.roomId || gameType == ""){
           connection.query(sql, function (err, result) {
             if (err) throw err;
@@ -189,6 +190,7 @@ io.sockets.on('connection',
       enemies.push(new Enemy(0, enemies.length, .25, 25, .25, room, 0));
       enemies.push(new Enemy(2, enemies.length, .25, 25, .25, room, 0));
       roundInfos.push(new RoundInfo(room, roundInfos.length));
+      sessionKills.push([room, 0]);
       let doorsInRoomStart = doors.filter(d => d.roomId == room);
       io.to(room).emit("startGame", doorsInRoomStart);
     });
@@ -565,6 +567,11 @@ function updateBullets(roomId){
                 }
                 if(enemy.health <= 0){
                   players[bullets[i].playerFired].kills++;
+                  sessionKills.forEach(session => {
+                    if(session[0] == players[bullets[i].playerFired].roomId){
+                      session[1]++;
+                    }
+                  })
                   removeEnemy(enemy.index, enemy.roomId);
                   bullets[i].bulletInEnemy = -1;
                 }
