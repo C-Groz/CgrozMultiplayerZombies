@@ -13,6 +13,9 @@ let runOnce2 = true;
 let playerStats;
 let leaderBoardData;
 let leaderBoardActive = false;
+let numPlayersAtStart = 0;
+let functionCounter = 0;
+let sessionKills = 0;
 
 //comment
 
@@ -24,6 +27,11 @@ socket.on("heartbeat", function(players) {
   updateMenus(players);
   updatePlayers(players);
   sendDrawData();
+
+  if(functionCounter <= 10){
+    numPlayersAtStart = players.length;
+    functionCounter++;
+  }
 });
 socket.once('sessionOver', function(roomSessionActive){
   gameActive = roomSessionActive;
@@ -44,8 +52,11 @@ socket.on("doorData", function(doorsFromServer){
 });
 socket.on('killData', function(playerKills){
   if(playerKills[clientPlayer.index] > killData[clientPlayer.index]){
-      score.money += 25 * (playerKills[clientPlayer.index] - killData[clientPlayer.index]);
+    score.money += 25 * (playerKills[clientPlayer.index] - killData[clientPlayer.index]);
   }
+  for(var i = 0; i < playerKills.length; i++){
+    sessionKills += playerKills[i] - killData[i];
+  };
   killData = playerKills;
 });
 socket.on('bulletData', function(bulletsFromServer){
@@ -500,7 +511,8 @@ function sendDrawData(){
       playerInfo = {
         roomId: clientPlayer.roomId,
         playerNames: [],
-        playerKills: [],
+        playerKills: sessionKills,
+        numPlayersAtStart: numPlayersAtStart,
       }
       players.forEach(player => {
         playerInfo.playerNames.push(player.name);

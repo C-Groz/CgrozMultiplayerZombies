@@ -108,7 +108,7 @@ io.sockets.on('connection',
       if(sqlConnected){
         var playerNamesString = "";
         var totalKills = 0;
-        var numPlayers = playerInfo.playerNames.length;
+        var numPlayers = playerInfo.numPlayersAtStart;
         var gameType;
         playerInfo.playerNames.forEach(name => {
           if(name != undefined){
