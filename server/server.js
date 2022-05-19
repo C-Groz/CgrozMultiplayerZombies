@@ -107,7 +107,7 @@ io.sockets.on('connection',
 
       if(sqlConnected){
         var playerNamesString = "";
-        var totalKills = 0;
+        var totalKills = playerInfo.playerKills;
         var numPlayers = playerInfo.numPlayersAtStart;
         var gameType;
         playerInfo.playerNames.forEach(name => {
@@ -116,11 +116,7 @@ io.sockets.on('connection',
           }
         });
         playerNamesString = playerNamesString.substring(0, playerNamesString.length - 2);
-        playerInfo.playerKills.forEach(kill => {
-          if(kill != undefined){
-          totalKills += kill;
-          }
-        });
+       
         if(numPlayers == 1){
           gameType = "solos";
         }
