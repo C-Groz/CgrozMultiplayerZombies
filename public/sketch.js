@@ -16,6 +16,7 @@ let leaderBoardActive = false;
 let numPlayersAtStart = 0;
 let functionCounter = 0;
 let sessionKills = 0;
+let playerNamesInLobby = [];
 
 //comment
 
@@ -30,6 +31,8 @@ socket.on("heartbeat", function(players) {
 
   if(functionCounter <= 10){
     numPlayersAtStart = players.length;
+    playerNamesInLobby = [];
+    players.forEach(player => playerNamesInLobby.push(player.name));
     functionCounter++;
   }
 });
@@ -510,7 +513,7 @@ function sendDrawData(){
     if(runOnce2){
       playerInfo = {
         roomId: clientPlayer.roomId,
-        playerNames: [],
+        playerNames: playerNamesInLobby,
         playerKills: sessionKills,
         numPlayersAtStart: numPlayersAtStart,
       }
