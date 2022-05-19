@@ -517,10 +517,6 @@ function sendDrawData(){
         playerKills: sessionKills,
         numPlayersAtStart: numPlayersAtStart,
       }
-      players.forEach(player => {
-        playerInfo.playerNames.push(player.name);
-        playerInfo.playerKills.push(player.kills);
-      });
       socket.emit('allPlayersDowned', playerInfo);
       runOnce2 = false;
     }
