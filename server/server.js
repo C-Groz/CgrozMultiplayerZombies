@@ -111,12 +111,6 @@ io.sockets.on('connection',
         var gameType;
         var numPlayers = sessionInfo.filter(session => session[0] == playerInfo.roomId)[0][2];
         var playerNamesString = sessionInfo.filter(session => session[0] == playerInfo.roomId)[0][3];
-        playerInfo.playerNames.forEach(name => {
-          if(name != undefined){
-            playerNamesString += name + ", ";
-          }
-        });
-        playerNamesString = playerNamesString.substring(0, playerNamesString.length - 2);
        
         if(numPlayers == 1){
           gameType = "solos";
