@@ -52,6 +52,7 @@ let bullets = [];
 var enemies = []
 var mapData;
 var sessionKills = [];
+var playerKills;
 setInterval(updateGame, 8); //default 16 
 setInterval(updateLeaderBoard, 12000);
 
