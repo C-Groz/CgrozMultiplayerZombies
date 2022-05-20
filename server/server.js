@@ -105,39 +105,7 @@ io.sockets.on('connection',
     socket.once('allPlayersDowned', function(playerInfo){
       var gameActive = false;
       io.to(playerInfo.roomId).emit('sessionOver', gameActive);
-
-      if(sqlConnected){
-        var kills = sessionInfo.filter(session => session[0] == playerInfo.roomId)[0][1];
-        var gameType;
-        var numPlayers = sessionInfo.filter(session => session[0] == playerInfo.roomId)[0][2];
-        var playerNamesString = sessionInfo.filter(session => session[0] == playerInfo.roomId)[0][3];
-       
-        if(numPlayers == 1){
-          gameType = "solos";
-        }
-        else if(numPlayers == 2){
-          gameType = "duos";
-        }
-        else if(numPlayers == 3){
-          gameType = "trios";
-        }
-        else if(numPlayers == 4){
-          gameType = "quads";
-        }
-        var today = new Date().
-        toLocaleString('en-us', {year: 'numeric', month: '2-digit', day: '2-digit'}).
-        replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2');
-
-        var sql = "INSERT INTO " + gameType + " (name, kills, date) VALUES ('" + playerNamesString + "', '" + kills + "', '" + today + "')";
-        if(lastRoomLoggedInDB != playerInfo.roomId || gameType == ""){
-          connection.query(sql, function (err, result) {
-            if (err) throw err;
-            console.log("1 record inserted");
-          });
-          lastRoomLoggedInDB = playerInfo.roomId;
-        }
-
-      }
+      sendGameDataToDataBase(playerInfo.roomId);
     });
 
     socket.on('nameChange', 
@@ -289,8 +257,43 @@ function updateGame() {
     }catch(err){
       console.log("room: " + room + " err: " + err);
       rooms = rooms.filter(r => r != room);
-      console.log("Removed room due to err" + room);    
+      console.log("Removed room due to err" + room);
+      sendGameDataToDataBase(room);
     }
+  }
+}
+function sendGameDataToDataBase(roomId){
+  if(sqlConnected){
+    var kills = sessionInfo.filter(session => session[0] == roomId)[0][1];
+    var gameType;
+    var numPlayers = sessionInfo.filter(session => session[0] == roomId)[0][2];
+    var playerNamesString = sessionInfo.filter(session => session[0] == roomId)[0][3];
+   
+    if(numPlayers == 1){
+      gameType = "solos";
+    }
+    else if(numPlayers == 2){
+      gameType = "duos";
+    }
+    else if(numPlayers == 3){
+      gameType = "trios";
+    }
+    else if(numPlayers == 4){
+      gameType = "quads";
+    }
+    var today = new Date().
+    toLocaleString('en-us', {year: 'numeric', month: '2-digit', day: '2-digit'}).
+    replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2');
+
+    var sql = "INSERT INTO " + gameType + " (name, kills, date) VALUES ('" + playerNamesString + "', '" + kills + "', '" + today + "')";
+    if(lastRoomLoggedInDB != roomId || gameType == ""){
+      connection.query(sql, function (err, result) {
+        if (err) throw err;
+        console.log("1 record inserted");
+      });
+      lastRoomLoggedInDB = roomId;
+    }
+
   }
 }
 
