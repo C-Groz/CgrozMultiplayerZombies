@@ -279,7 +279,7 @@ function draw() {
     score.drawScoreLayout();
   
     if(mbox.playerInProximity()){
-      if(!mbox.open && !clientPlayer.downed){
+      if(!mbox.open && !players[clientPlayer.roomIndex].downed){
         mbox.offerInteraction();
         mbox.pickedUpBool = false;
       }
@@ -300,7 +300,7 @@ function draw() {
 
     wallGuns.forEach(element => {
       if(element.playerInProximity()){
-        if(!clientPlayer.downed){
+        if(!players[clientPlayer.roomIndex].downed){
           element.offerPickup();
           if(keyIsDown(70) && !element.pickedUpBool){
             element.userPickedUp();
