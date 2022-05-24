@@ -299,14 +299,16 @@ function draw() {
     }
 
     wallGuns.forEach(element => {
-      if(element.playerInProximity() && !clientPlayer.downed){
-        element.offerPickup();
-        if(keyIsDown(70) && !element.pickedUpBool){
-          element.userPickedUp();
-          element.pickedUpBool = true;
-        }
-        if(!keyIsDown(70)){
-          element.pickedUpBool = false;
+      if(element.playerInProximity()){
+        if(!clientPlayer.downed){
+          element.offerPickup();
+          if(keyIsDown(70) && !element.pickedUpBool){
+            element.userPickedUp();
+            element.pickedUpBool = true;
+          }
+          if(!keyIsDown(70)){
+            element.pickedUpBool = false;
+          }
         }
       }
   });
