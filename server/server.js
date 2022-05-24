@@ -157,7 +157,7 @@ io.sockets.on('connection',
       playersInRoomStart.forEach(player => {
         playerNames += player.name + ", ";
       });
-      playerNames = playerNames.substring(playerNames.length, 2);
+      playerNames = playerNames.substring(playerNames.length - 2);
       sessionInfo.push([room, 0, playersInRoomStart.length, playerNames]);
       let doorsInRoomStart = doors.filter(d => d.roomId == room);
       io.to(room).emit("startGame", doorsInRoomStart);
