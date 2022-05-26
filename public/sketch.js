@@ -522,7 +522,7 @@ function inProximityOfDownedPlayer(){
   if(downedPlayers.length > 0){
     downedPlayers.forEach(downedPlayer => {
       let distance = sqrt(pow(downedPlayer.x - players[clientPlayer.index].x, 2) + pow(downedPlayer.y - players[clientPlayer.index].y, 2));
-      if(distance < 75){
+      if(distance < 75 && !players[clientPlayer.roomIndex].downed){
         offerRevive(downedPlayer);
       }
     });
@@ -544,6 +544,7 @@ function offerRevive(downedPlayer){
   }else{
     reviveInProgress = false;
     reviveStartBoolean = false;
+    reviveTimeStart = millis();
   }
   if(reviveTimeStart + reviveTime < millis() && reviveStartBoolean && reviveInProgress){
     revive(downedPlayer);
