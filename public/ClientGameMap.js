@@ -28,8 +28,8 @@ class ClientGameMap {
             ]
             this.doorCoords = [
             //   n  x    y    l   w
-                [1, 600, 200, 30, 200], //door 1
-                [2, 700, 700, 30, 200]  //door 2
+                [1, 600, 198, 30, 204], //door 1
+                [2, 700, 698, 30, 204]  //door 2
             ]
             this.doorsActive;
     
