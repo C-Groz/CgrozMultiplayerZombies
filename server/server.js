@@ -270,16 +270,20 @@ function sendGameDataToDataBase(roomId){
     var playerNamesString = sessionInfo.filter(session => session[0] == roomId)[0][3];
    
     if(numPlayers == 1){
-      gameType = "solos";
+      //gameType = "solos";
+      gameType = "artsolos";
     }
     else if(numPlayers == 2){
-      gameType = "duos";
+      //gameType = "duos";
+      gameType = "artduos";
     }
     else if(numPlayers == 3){
-      gameType = "trios";
+      //gameType = "trios";
+      gameType = "arttrios";
     }
     else if(numPlayers == 4){
-      gameType = "quads";
+      //gameType = "quads";
+      gameType = "artquads";
     }
     var today = new Date().
     toLocaleString('en-us', {year: 'numeric', month: '2-digit', day: '2-digit'}).
@@ -300,25 +304,25 @@ function sendGameDataToDataBase(roomId){
 function updateLeaderBoard(){
   if(sqlConnected){
     try{
-      var sql = "SELECT * FROM solos ORDER BY kills DESC LIMIT 0, 3;"
+      var sql = "SELECT * FROM artsolos ORDER BY kills DESC LIMIT 0, 3;"
       connection.query(sql, function (err, result) {
         if (err) throw err;
         LBsolos = result;
       });
 
-      sql = "SELECT * FROM duos ORDER BY kills DESC LIMIT 0, 3;"
+      sql = "SELECT * FROM artduos ORDER BY kills DESC LIMIT 0, 3;"
       connection.query(sql, function (err, result) {
         if (err) throw err;
         LBduos = result;
       });
 
-      sql = "SELECT * FROM trios ORDER BY kills DESC LIMIT 0, 3;"
+      sql = "SELECT * FROM arttrios ORDER BY kills DESC LIMIT 0, 3;"
       connection.query(sql, function (err, result) {
         if (err) throw err;
         LBtrios = result;
       });
 
-      sql = "SELECT * FROM quads ORDER BY kills DESC LIMIT 0, 3;"
+      sql = "SELECT * FROM artquads ORDER BY kills DESC LIMIT 0, 3;"
       connection.query(sql, function (err, result) {
         if (err) throw err;
         LBquads = result;
