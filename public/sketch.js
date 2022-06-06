@@ -165,7 +165,7 @@ function setup() {
   nameInput = createInput('Enter Name');
   submitNameButton = createButton('Submit');
   startGameButton = createButton('Start Game');
-  leaderBoardButton = createButton('Arts In The Courtyard\nLeaderboard');
+  leaderBoardButton = createButton('Leaderboard');
   closeLeaderBoardButton = createButton('Close');
 
   nameInput.position(windowWidth/2 - 100, windowHeight/2 + 15, 0);
@@ -174,7 +174,7 @@ function setup() {
   startGameButton.position(windowWidth/2 - 150, windowHeight/2 + 50, 0);
   startGameButton.mousePressed(startGame);
   startGameButton.size(300, 50);
-  startGameButton.style('font-size', '35px');
+  startGameButton.style('font-size', '55px');
   let col = color(134, 194, 156);
   startGameButton.style('background-color', col);
   leaderBoardButton.size(300, 50);
