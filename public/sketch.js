@@ -174,13 +174,13 @@ function setup() {
   startGameButton.position(windowWidth/2 - 150, windowHeight/2 + 50, 0);
   startGameButton.mousePressed(startGame);
   startGameButton.size(300, 50);
-  startGameButton.style('font-size', '55px');
+  startGameButton.style('font-size', '35px');
   let col = color(134, 194, 156);
   startGameButton.style('background-color', col);
   leaderBoardButton.size(300, 50);
   leaderBoardButton.position(windowWidth/2 - 150, windowHeight/2 + 100, 0);
   leaderBoardButton.mousePressed(activateLeaderboard);
-  leaderBoardButton.style('font-size', '20px');
+  leaderBoardButton.style('font-size', '35px');
   closeLeaderBoardButton.mousePressed(closeLeaderBoard);
   closeLeaderBoardButton.size(100, 50);
   closeLeaderBoardButton.style('font-size', '30px');
