@@ -29,7 +29,7 @@ const connection = mysql.createConnection({
   port: '3306', // default port for mysql is 3306
   database: 'sys', // database from which we want to connect out node application
   user: 'admin', // username of the mysql connection
-  password: 'SQL45admin.0' // password of the mysql connection
+  password: 'SQL45rootuser.0' // password of the mysql connection
 });
 
 try{
