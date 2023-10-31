@@ -18,12 +18,13 @@ console.log('The server is now running at port ' + process.env.PORT);
 app.use(express.static("public"));
 const io = socket(server);
 
-let sqlConnected = false;
+//let sqlConnected = false;
 let LBsolos;
 let LBduos;
 let LBtrios;
 let LBquads;
 
+/*
 const connection = mysql.createConnection({
   host: 'cgrozdatabase.ciimbtwlcait.us-east-1.rds.amazonaws.com', // host for connection
   port: '3306', // default port for mysql is 3306
@@ -41,6 +42,7 @@ try{
   console.log('unable to connect to mysql err: ' + err);
   sqlConnected = false;
 }
+*/
 
 let rooms = [short.generate()];
 let lastRoomLoggedInDB = "";
@@ -64,7 +66,7 @@ io.sockets.on('connection',
 
     socket.on('start', 
     function(data){
-      updateLeaderBoard();
+      //updateLeaderBoard();
       userCounter++;
 
       var roomId = getRoom();
@@ -105,7 +107,7 @@ io.sockets.on('connection',
     socket.once('allPlayersDowned', function(playerInfo){
       var gameActive = false;
       io.to(playerInfo.roomId).emit('sessionOver', gameActive);
-      sendGameDataToDataBase(playerInfo.roomId);
+      //sendGameDataToDataBase(playerInfo.roomId);
     });
 
     socket.on('nameChange', 
@@ -258,7 +260,7 @@ function updateGame() {
       console.log("room: " + room + " err: " + err);
       rooms = rooms.filter(r => r != room);
       console.log("Removed room due to err" + room);
-      sendGameDataToDataBase(room);
+      //sendGameDataToDataBase(room);
     }
   }
 }
