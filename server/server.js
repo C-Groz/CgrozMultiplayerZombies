@@ -56,7 +56,7 @@ var mapData;
 var sessionInfo = [];
 var playerKills;
 setInterval(updateGame, 8); //default 16 
-setInterval(updateLeaderBoard, 12000);
+//setInterval(updateLeaderBoard, 12000);
 
 
 
