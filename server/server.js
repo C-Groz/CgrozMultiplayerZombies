@@ -264,6 +264,7 @@ function updateGame() {
     }
   }
 }
+/*
 function sendGameDataToDataBase(roomId){
   if(sqlConnected){
     var kills = sessionInfo.filter(session => session[0] == roomId)[0][1];
@@ -342,7 +343,7 @@ function updateLeaderBoard(){
     }
   }
 }
-
+*/
 function returnPlayerLocationX(decimal){
   return (1000 * decimal);
 }
